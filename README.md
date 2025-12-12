@@ -5,6 +5,7 @@ This project introduces the concept of Style Modifiers — optional, multi-selec
 Style Modifiers are not a replacement for Block Styles. They are a complementary concept that fills a well-known gap without changing existing Core behavior.
 
 **What Problem Does This Solve?**
+
 Current situation:
 - Block Styles are single-select (radio-button behavior).
 - Only one is-style-* class can be active at a time.

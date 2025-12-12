@@ -33,24 +33,40 @@ Style Modifiers are additive CSS classes that:
 Registering a block style modifier:
 
 ```php
-register_block_style_modifier( 'core/quote', [
-    'name'         => 'blue-text',
-    'label'        => 'Blue text',
-    'class'        => 'has-blue-text',
+// Example: No bottom margin modifier for Columns block
+register_block_style_modifier( 'core/columns', [
+    'name'  => 'no-bottom-margin',
+    'label' => 'No bottom margin',
+    'class' => 'no-margin-bottom',
     'inline_style' => '
-        .wp-block-quote.has-blue-text {
-            color: blue;
+        .wp-block-columns.no-margin-bottom {
+            margin-bottom: 0 !important;
         }
     ',
 ] );
 
-register_block_style_modifier( '*', [
-    'name'         => 'no-margin',
-    'label'        => 'No margin',
-    'class'        => 'u-no-margin',
+// Example: Lead text modifier for Paragraph block
+register_block_style_modifier( 'core/paragraph', [
+    'name'  => 'lead-text',
+    'label' => 'Lead text',
+    'class' => 'is-lead-text',
     'inline_style' => '
-        .u-no-margin {
-            margin-bottom: 0 !important;
+        .wp-block-paragraph.is-lead-text {
+            font-size: 1.25em;
+            line-height: 1.6;
+        }
+    ',
+] );
+
+// Example: Global modifier for all blocks
+register_block_style_modifier( '*', [
+    'name'  => 'debug-outline',
+    'label' => 'Debug outline',
+    'class' => 'debug-outline',
+    'inline_style' => '
+        .debug-outline {
+            outline: 2px dashed red;
+            outline-offset: -2px;
         }
     ',
 ] );
@@ -59,7 +75,7 @@ register_block_style_modifier( '*', [
 Example result in markup:
 
 ```html
-    <div class="wp-block-paragraph is-style-default has-blue-text u-no-margin">
+    <div class="wp-block-paragraph is-style-default debug-outline is-lead-text">
  ```
     
 

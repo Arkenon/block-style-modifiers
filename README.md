@@ -1,5 +1,6 @@
 
 **Style Modifiers for the WordPress Block Editor**
+
 The WordPress Block Editor currently supports Block Styles as mutually exclusive visual variations. This works well for large, alternative designs, but it does not address a common and practical need: additive, combinable style modifiers.
 This project introduces the concept of Style Modifiers — optional, multi-select CSS classes that can be applied to blocks in a controlled, discoverable, and user-friendly way.
 Style Modifiers are not a replacement for Block Styles. They are a complementary concept that fills a well-known gap without changing existing Core behavior.

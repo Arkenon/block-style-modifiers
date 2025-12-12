@@ -59,10 +59,6 @@ const withStyleModifiers = createHigherOrderComponent(
         const {name, attributes, setAttributes} = props;
         const modifiers = getModifiersForBlock(name);
 
-        if (!Object.keys(modifiers).length) {
-            return <BlockEdit {...props} />;
-        }
-
         const suggestions = Object.values(modifiers).map(
             (m) => m.class
         );

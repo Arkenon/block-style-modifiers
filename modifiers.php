@@ -2,7 +2,7 @@
 
 
 register_block_style_modifier( 'core/image', [
-    'name'  => 'rounded-image',
+    'name'  => 'rounded-corners',
     'label' => 'Rounded corners',
     'class' => 'img-rounded',
     'inline_style' => '
@@ -46,27 +46,7 @@ register_block_style_modifier( 'core/paragraph', [
     ',
 ] );
 
-register_block_style_modifier( 'core/columns', [
-    'name'  => 'tight-gap',
-    'label' => 'Tight gap',
-    'class' => 'has-tight-gap',
-    'inline_style' => '
-        .wp-block-columns.has-tight-gap {
-            gap: 0.75rem;
-        }
-    ',
-] );
 
-register_block_style_modifier( 'core/columns', [
-    'name'  => 'no-bottom-margin',
-    'label' => 'No bottom margin',
-    'class' => 'no-margin-bottom',
-    'inline_style' => '
-        .wp-block-columns.no-margin-bottom {
-            margin-bottom: 0 !important;
-        }
-    ',
-] );
 
 register_block_style_modifier( '*', [
     'name'  => 'debug-outline',
@@ -99,6 +79,83 @@ register_block_style_modifier( 'core/group', [
         .wp-block-group.has-no-margin {
             margin: 0 !important;
         }
+    ',
+] );
+
+
+// Text Modifiers
+register_block_style_modifier( 'core/heading', [
+    'name'         => 'gradient-text',
+    'label'        => 'Gradient Text',
+    'class'        => 'gradient-text',
+    'inline_style' => '
+        .wp-block-heading.gradient-text {
+            background: linear-gradient(90deg, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
+    ',
+] );
+register_block_style_modifier( 'core/heading', [
+    'name'         => 'neon-glow',
+    'label'        => 'Neon Glow',
+    'class'        => 'neon-glow-text',
+    'inline_style' => '
+        .wp-block-heading.neon-glow-text {
+            color: #0c0c0c;
+            text-shadow:
+                0 0 5px #0ff,
+                0 0 10px #0ff,
+                0 0 20px #0ff,
+                0 0 30px #09f,
+                0 0 40px #09f,
+                0 0 50px #09f;
+        }
+    ',
+] );
+register_block_style_modifier( 'core/paragraph', [
+    'name'         => 'skewed-text',
+    'label'        => 'Skewed Text',
+    'class'        => 'skewed-text',
+    'inline_style' => '
+        .wp-block-paragraph.skewed-text {
+            display: inline-block;
+            transform: skewX(-12deg);
+            font-weight: bold;
+        }
+    ',
+] );
+register_block_style_modifier( 'core/paragraph', [
+    'name'         => 'shadow-3d',
+    'label'        => '3D Text Shadow',
+    'class'        => 'text-shadow-3d',
+    'inline_style' => '
+        .wp-block-paragraph.text-shadow-3d {
+            text-shadow:
+                1px 1px 0 #aaa,
+                2px 2px 0 #999,
+                3px 3px 0 #888,
+                4px 4px 0 #777;
+        }
+    ',
+] );
+register_block_style_modifier( 'core/heading', [
+    'name'         => 'fade-in-text',
+    'label'        => 'Fade In Text',
+    'class'        => 'fade-in-text',
+    'inline_style' => '
+    .wp-block-heading {
+        @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(8px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .fade-in-text {
+                opacity: 0;
+                animation: fadeIn 0.8s ease-in forwards;
+        }
+    }
     ',
 ] );
 

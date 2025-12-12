@@ -1,20 +1,20 @@
-const { addFilter } = wp.hooks;
-const { createHigherOrderComponent } = wp.compose;
-const { InspectorControls } = wp.blockEditor;
-const { PanelBody, FormTokenField } = wp.components;
-const { Fragment } = wp.element;
+import { addFilter } from '@wordpress/hooks';
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, FormTokenField } from '@wordpress/components';
+import { Fragment } from '@wordpress/element';
 
 /**
- * Helper: get modifiers for a block
+ * Registry helper
  */
-function getModifiersForBlock( blockName ) {
+const getModifiersForBlock = ( blockName ) => {
     const registry = window.__BLOCK_STYLE_MODIFIERS__ || {};
 
     return {
         ...( registry['*'] || {} ),
         ...( registry[ blockName ] || {} ),
     };
-}
+};
 
 /**
  * 1. Extend block attributes
@@ -30,7 +30,6 @@ addFilter(
                 default: [],
             },
         };
-
         return settings;
     }
 );
@@ -38,16 +37,16 @@ addFilter(
 /**
  * 2. Inspector UI
  */
-const withStyleModifiersInspector = createHigherOrderComponent(
+const withStyleModifiers = createHigherOrderComponent(
     ( BlockEdit ) => ( props ) => {
         const { name, attributes, setAttributes } = props;
         const modifiers = getModifiersForBlock( name );
 
-        if ( Object.keys( modifiers ).length === 0 ) {
+        if ( ! Object.keys( modifiers ).length ) {
             return <BlockEdit { ...props } />;
         }
 
-        const availableTokens = Object.values( modifiers ).map(
+        const suggestions = Object.values( modifiers ).map(
             ( m ) => m.class
         );
 
@@ -59,9 +58,10 @@ const withStyleModifiersInspector = createHigherOrderComponent(
                         <FormTokenField
                             label="Modifiers"
                             value={ attributes.styleModifiers }
-                            suggestions={ availableTokens }
-                            onChange={ ( newTokens ) =>
-                                setAttributes( { styleModifiers: newTokens } )
+                            suggestions={ suggestions }
+                            __experimentalExpandOnFocus = {true}
+                            onChange={ ( value ) =>
+                                setAttributes( { styleModifiers: value } )
                             }
                         />
                     </PanelBody>
@@ -69,13 +69,13 @@ const withStyleModifiersInspector = createHigherOrderComponent(
             </Fragment>
         );
     },
-    'withStyleModifiersInspector'
+    'withStyleModifiers'
 );
 
 addFilter(
     'editor.BlockEdit',
-    'bsm/with-style-modifiers-inspector',
-    withStyleModifiersInspector
+    'bsm/with-style-modifiers',
+    withStyleModifiers
 );
 
 /**
@@ -85,7 +85,7 @@ addFilter(
     'blocks.getSaveContent.extraProps',
     'bsm/apply-style-modifiers',
     ( extraProps, blockType, attributes ) => {
-        if ( ! attributes.styleModifiers || attributes.styleModifiers.length === 0 ) {
+        if ( ! attributes?.styleModifiers?.length ) {
             return extraProps;
         }
 
@@ -100,4 +100,34 @@ addFilter(
 
         return extraProps;
     }
+);
+
+const withStyleModifiersOnEditor = createHigherOrderComponent(
+    ( BlockListBlock ) => ( props ) => {
+        const { attributes } = props;
+
+        if ( ! attributes?.styleModifiers?.length ) {
+            return <BlockListBlock { ...props } />;
+        }
+
+        const modifierClasses = attributes.styleModifiers.join( ' ' );
+
+        return (
+            <BlockListBlock
+                { ...props }
+                className={
+                    props.className
+                        ? `${ props.className } ${ modifierClasses }`
+                        : modifierClasses
+                }
+            />
+        );
+    },
+    'withStyleModifiersOnEditor'
+);
+
+addFilter(
+    'editor.BlockListBlock',
+    'bsm/apply-style-modifiers-editor',
+    withStyleModifiersOnEditor
 );

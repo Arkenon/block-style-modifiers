@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Block Style Modifiers
  * Description: Adds additive, multi-select style modifiers to Gutenberg blocks.
- * Version: 0.1.0
+ * Version: 1.0.0
  * Author: Kadim Gültekin
  * Author URI: https://kadimgultekin.com
  * License: GPL-3.0
@@ -14,16 +14,21 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+define( 'BSM_PLUGIN_VERSION', '1.0.0' );
+define( 'BSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'BSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+
 /**
  * Internal registry
  */
-function bsm_get_style_modifier_registry() {
+function &bsm_get_style_modifier_registry(): array {
     static $registry = [];
 
     return $registry;
 }
 
-function register_block_style_modifier( string $block_name, array $modifier ) {
+function register_block_style_modifier( string $block_name, array $modifier ): void {
     $registry = &bsm_get_style_modifier_registry();
 
     if ( empty( $modifier['name'] ) || empty( $modifier['class'] ) ) {
@@ -45,7 +50,7 @@ function register_block_style_modifier( string $block_name, array $modifier ) {
     );
 }
 
-function bsm_collect_inline_styles() {
+function bsm_collect_inline_styles(): string {
     $registry = bsm_get_style_modifier_registry();
     $styles   = '';
 
@@ -61,20 +66,12 @@ function bsm_collect_inline_styles() {
 }
 
 
-function bsm_enqueue_editor_assets() {
+function bsm_enqueue_editor_assets(): void {
     wp_enqueue_script(
         'block-style-modifiers-editor',
-        plugins_url( 'assets/editor.js', __FILE__ ),
-        [
-            'wp-blocks',
-            'wp-element',
-            'wp-components',
-            'wp-compose',
-            'wp-data',
-            'wp-hooks',
-            'wp-editor',
-        ],
-        '0.1.0',
+        plugins_url( 'build/editor.js', __FILE__ ),
+        [ 'wp-blocks', 'wp-element', 'wp-components', 'wp-compose', 'wp-data', 'wp-hooks', 'wp-editor' ],
+        BSM_PLUGIN_VERSION,
         true
     );
 
@@ -100,7 +97,7 @@ function bsm_enqueue_editor_assets() {
 }
 add_action( 'enqueue_block_editor_assets', 'bsm_enqueue_editor_assets' );
 
-function bsm_enqueue_frontend_styles() {
+function bsm_enqueue_frontend_styles(): void {
     $inline_css = bsm_collect_inline_styles();
     if ( ! $inline_css ) {
         return;
@@ -115,3 +112,6 @@ function bsm_enqueue_frontend_styles() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'bsm_enqueue_frontend_styles' );
+
+// Example Modifiers
+include_once 'modifiers.php';

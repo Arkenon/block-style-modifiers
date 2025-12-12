@@ -30,9 +30,38 @@ Style Modifiers are additive CSS classes that:
  - Preserve class order, allowing advanced CSS control
  - They behave like checkboxes, not radio buttons.
 
+Registering a block style modifier:
+
+```php
+register_block_style_modifier( 'core/quote', [
+    'name'         => 'blue-text',
+    'label'        => 'Blue text',
+    'class'        => 'has-blue-text',
+    'inline_style' => '
+        .wp-block-quote.has-blue-text {
+            color: blue;
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'no-margin',
+    'label'        => 'No margin',
+    'class'        => 'u-no-margin',
+    'inline_style' => '
+        .u-no-margin {
+            margin-bottom: 0 !important;
+        }
+    ',
+] );
+```
+
 Example result in markup:
 
-    <div class="wp-block-paragraph is-style-default no-margin has-divider align-wide">
+```html
+    <div class="wp-block-paragraph is-style-default has-blue-text u-no-margin">
+ ```
+    
 
 **Why This Does NOT Belong in WordPress Core (Yet)**
 

@@ -20,13 +20,13 @@ define( 'BSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 
-if ( ! function_exists( "block_style_modifiers_get__registry" ) ) {
+if ( ! function_exists( "block_style_modifiers_get_registry" ) ) {
     /**
      * Get the registry of block style modifiers.
      * @return array The registry of block style modifiers.
      * @since 1.0.0
      */
-    function &block_style_modifiers_get__registry(): array {
+    function &block_style_modifiers_get_registry(): array {
         static $registry = [];
 
         return $registry;
@@ -45,7 +45,7 @@ if ( ! function_exists( "register_block_style_modifier" ) ) {
      * @since 1.0.0
      */
     function register_block_style_modifier( string $block_name, array $modifier ): void {
-        $registry = &block_style_modifiers_get__registry();
+        $registry = &block_style_modifiers_get_registry();
 
         if ( empty( $modifier['name'] ) || empty( $modifier['class'] ) ) {
             return;
@@ -76,7 +76,7 @@ if ( ! function_exists( "block_style_modifiers_collect_inline_styles" ) ) {
      * @since 1.0.0
      */
     function block_style_modifiers_collect_inline_styles(): string {
-        $registry = &block_style_modifiers_get__registry();
+        $registry = &block_style_modifiers_get_registry();
         $styles   = '';
 
         foreach ( $registry as $block => $modifiers ) {
@@ -123,7 +123,7 @@ if ( ! function_exists( "block_style_modifiers_get__registry" ) ) {
         wp_add_inline_script(
             'block-style-modifiers-editor',
             'window.__BLOCK_STYLE_MODIFIERS__ = ' . wp_json_encode(
-                block_style_modifiers_get__registry()
+                block_style_modifiers_get_registry()
             ) . ';',
             'before'
         );

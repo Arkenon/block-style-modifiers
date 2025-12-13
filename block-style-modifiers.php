@@ -92,7 +92,7 @@ if ( ! function_exists( "block_style_modifiers_collect_inline_styles" ) ) {
 }
 
 
-if ( ! function_exists( "block_style_modifiers_get__registry" ) ) {
+if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
     /**
      * Enqueue editor assets for block style modifiers.
      *

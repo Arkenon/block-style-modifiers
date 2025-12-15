@@ -1,0 +1,51 @@
+/* Block Style Modifiers editor styles */
+
+.block-style-modifiers__section {
+  margin-bottom: 16px;
+}
+
+.block-style-modifiers__section-title {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.block-style-modifiers__selected-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.block-style-modifiers__selected-item {
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: move;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.block-style-modifiers__selected-item--dragged {
+  background-color: #e0e0e0;
+}
+
+.block-style-modifiers__selected-item-label {
+  font-size: 13px;
+}
+
+.block-style-modifiers__empty {
+  color: #757575;
+  font-size: 13px;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.block-style-modifiers__available-title {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+

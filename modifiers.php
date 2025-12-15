@@ -1,102 +1,5 @@
 <?php
 
-
-register_block_style_modifier( 'core/image', [
-    'name'         => 'rounded-corners',
-    'label'        => 'Rounded corners',
-    'class'        => 'img-rounded',
-    'description'  => 'Add smooth rounded corners to image',
-    'category'     => 'Image Effects',
-    'inline_style' => '
-        .wp-block-image.img-rounded img {
-            border-radius: 16px;
-        }
-    ',
-] );
-
-register_block_style_modifier( 'core/image', [
-    'name'         => 'image-shadow',
-    'label'        => 'Soft shadow',
-    'class'        => 'img-shadow',
-    'description'  => 'Add a soft shadow effect to image',
-    'category'     => 'Image Effects',
-    'inline_style' => '
-        .wp-block-image.img-shadow img {
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-    ',
-] );
-
-register_block_style_modifier( 'core/paragraph', [
-    'name'         => 'lead-text',
-    'label'        => 'Lead text',
-    'class'        => 'is-lead-text',
-    'description'  => 'Make text larger and more prominent',
-    'category'     => 'Text Styles',
-    'inline_style' => '
-        .wp-block-paragraph.is-lead-text {
-            font-size: 1.25em;
-            line-height: 1.6;
-        }
-    ',
-] );
-
-register_block_style_modifier( 'core/paragraph', [
-    'name'         => 'muted-text',
-    'label'        => 'Muted text',
-    'class'        => 'is-muted-text',
-    'description'  => 'Reduce text opacity for less emphasis',
-    'category'     => 'Text Styles',
-    'inline_style' => '
-        .wp-block-paragraph.is-muted-text {
-            color: #777;
-        }
-    ',
-] );
-
-
-
-register_block_style_modifier( '*', [
-    'name'         => 'debug-outline',
-    'label'        => 'Debug outline',
-    'class'        => 'debug-outline',
-    'description'  => 'Show red outline for debugging layout',
-    'category'     => 'Debug',
-    'inline_style' => '
-        .debug-outline {
-            outline: 2px dashed red;
-            outline-offset: -2px;
-        }
-    ',
-] );
-
-register_block_style_modifier( 'core/group', [
-    'name'         => 'large-margin',
-    'label'        => 'Large margin',
-    'class'        => 'has-large-margin',
-    'description'  => 'Add extra vertical spacing',
-    'category'     => 'Spacing',
-    'inline_style' => '
-        .wp-block-group.has-large-margin {
-            margin: 4rem 0;
-        }
-    ',
-] );
-
-register_block_style_modifier( 'core/group', [
-    'name'         => 'no-margin',
-    'label'        => 'No margin',
-    'class'        => 'has-no-margin',
-    'description'  => 'Remove all margins',
-    'category'     => 'Spacing',
-    'inline_style' => '
-        .wp-block-group.has-no-margin {
-            margin: 0 !important;
-        }
-    ',
-] );
-
-
 // Text Modifiers
 register_block_style_modifier( 'core/heading', [
     'name'         => 'gradient-text',
@@ -163,23 +66,146 @@ register_block_style_modifier( 'core/paragraph', [
         }
     ',
 ] );
-register_block_style_modifier( 'core/heading', [
-    'name'         => 'fade-in-text',
-    'label'        => 'Fade In Text',
-    'class'        => 'fade-in-text',
-    'description'  => 'Animate text with fade-in effect',
+
+
+register_block_style_modifier( '*', [
+    'name'         => 'hide-sm',
+    'label'        => 'Hide on Small Screens',
+    'class'        => 'hide-sm',
+    'description'  => 'Hide block on small (max-width: 576px) screens',
+    'category'     => 'Responsive',
+    'inline_style' => '
+        @media (max-width: 576px) {
+            .hide-sm {
+                display: none !important;
+            }
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'hide-md',
+    'label'        => 'Hide on Medium Screens',
+    'class'        => 'hide-md',
+    'description'  => 'Hide block on medium (max-width: 768px) screens',
+    'category'     => 'Responsive',
+    'inline_style' => '
+        @media (max-width: 768px) {
+            .hide-md {
+                display: none !important;
+            }
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'center-md',
+    'label'        => 'Center on Medium Screens',
+    'class'        => 'center-md',
+    'description'  => 'Align content center on medium screens',
+    'category'     => 'Responsive',
+    'inline_style' => '
+        @media (max-width: 768px) {
+            .center-md {
+                text-align: center !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'stack-lg',
+    'label'        => 'Stack on Large Screens',
+    'class'        => 'stack-lg',
+    'description'  => 'Force vertical stack layout on large screens',
+    'category'     => 'Responsive',
+    'inline_style' => '
+        @media (min-width: 1024px) {
+            .stack-lg {
+                display: block !important;
+            }
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'fade-in',
+    'label'        => 'Fade In',
+    'class'        => 'fade-in',
+    'description'  => 'Fade in animation on load',
     'category'     => 'Animations',
     'inline_style' => '
-    .wp-block-heading {
         @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(8px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .fade-in-text {
-                opacity: 0;
-                animation: fadeIn 0.8s ease-in forwards;
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-    }
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'bounce',
+    'label'        => 'Bounce In',
+    'class'        => 'bounce',
+    'description'  => 'Bounce effect on load',
+    'category'     => 'Animations',
+    'inline_style' => '
+        @keyframes bounceIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .bounce {
+            animation: bounceIn 0.8s ease forwards;
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'delay-2s',
+    'label'        => 'Delay 2 Seconds',
+    'class'        => 'delay-2s',
+    'description'  => 'Add 2-second delay to animation',
+    'category'     => 'Animations',
+    'inline_style' => '
+        .delay-2s {
+            animation-delay: 2s !important;
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'slide-up',
+    'label'        => 'Slide Up',
+    'class'        => 'slide-up',
+    'description'  => 'Slide in from bottom',
+    'category'     => 'Animations',
+    'inline_style' => '
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+        }
+    ',
+] );
+
+register_block_style_modifier( '*', [
+    'name'         => 'delay-1s',
+    'label'        => 'Delay 1 Second',
+    'class'        => 'delay-1s',
+    'description'  => 'Add 1-second delay to animation',
+    'category'     => 'Animations',
+    'inline_style' => '
+        .delay-1s {
+            animation-delay: 1s !important;
+        }
     ',
 ] );
 

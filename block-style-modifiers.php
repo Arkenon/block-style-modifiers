@@ -102,16 +102,21 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
     function block_style_modifiers_enqueue_editor_assets(): void {
         wp_enqueue_script(
             'block-style-modifiers-editor',
-            plugins_url( 'build/editor.js', __FILE__ ),
+            BSM_PLUGIN_URL.'/build/editor.js',
             [ 'wp-blocks', 'wp-element', 'wp-components', 'wp-compose', 'wp-data', 'wp-hooks', 'wp-editor' ],
             BSM_PLUGIN_VERSION,
             true
         );
 
+        if ( function_exists( 'wp_set_script_translations' ) ) {
+            $path = defined( 'BSM_PLUGIN_DIR' ) ? BSM_PLUGIN_DIR . 'languages' : '';
+            wp_set_script_translations( 'block-style-modifiers-editor', 'block-style-modifiers', $path );
+        }
+
         // Enqueue built editor stylesheet
         wp_enqueue_style(
             'block-style-modifiers-editor-style',
-            plugins_url( 'build/editor.css', __FILE__ ),
+            BSM_PLUGIN_URL.'/build/editor.css',
             [],
             BSM_PLUGIN_VERSION
         );

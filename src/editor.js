@@ -13,6 +13,7 @@ import {createHigherOrderComponent} from '@wordpress/compose';
 import {InspectorControls} from '@wordpress/block-editor';
 import {PanelBody, CheckboxControl, Button} from '@wordpress/components';
 import {Fragment, useState} from '@wordpress/element';
+import '@bsm/editor.scss';
 
 /**
  * Get modifiers for a specific block with metadata
@@ -65,7 +66,7 @@ const groupModifiersByCategory = (modifiers) => {
  */
 addFilter(
     'blocks.registerBlockType',
-    'bsm/add-style-modifiers-attribute',
+    'block-style-modifiers/add-style-modifiers-attribute',
     (settings) => {
         settings.attributes = {
             ...settings.attributes,
@@ -149,15 +150,11 @@ const withStyleModifiers = createHigherOrderComponent(
                     >
                         {/* Selected modifiers list */}
                         {selectedClasses.length > 0 && (
-                            <div style={{ marginBottom: '16px' }}>
-                                <strong style={{ display: 'block', marginBottom: '8px' }}>
+                            <div className="block-style-modifiers__section">
+                                <strong className="block-style-modifiers__section-title">
                                     {__('Selected Modifiers', 'block-style-modifiers')}
                                 </strong>
-                                <ul style={{
-                                    margin: 0,
-                                    padding: 0,
-                                    listStyle: 'none',
-                                }}>
+                                <ul className="block-style-modifiers__selected-list">
                                     {selectedModifiers.map((mod, index) => (
                                         <li
                                             key={mod.class}
@@ -167,19 +164,9 @@ const withStyleModifiers = createHigherOrderComponent(
                                             onDrop={(e) => handleDrop(e, index)}
                                             onDragEnd={handleDragEnd}
                                             title={mod.description || mod.label}
-                                            style={{
-                                                padding: '8px 12px',
-                                                marginBottom: '4px',
-                                                backgroundColor: draggedIndex === index ? '#e0e0e0' : '#f0f0f0',
-                                                border: '1px solid #ddd',
-                                                borderRadius: '4px',
-                                                cursor: 'move',
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                            }}
+                                            className={`block-style-modifiers__selected-item${draggedIndex === index ? ' block-style-modifiers__selected-item--dragged' : ''}`}
                                         >
-                                            <span style={{ fontSize: '13px' }}>
+                                            <span className="block-style-modifiers__selected-item-label">
                                                 ⋮⋮ {mod.label}
                                             </span>
                                             <Button
@@ -188,7 +175,6 @@ const withStyleModifiers = createHigherOrderComponent(
                                                 icon="no-alt"
                                                 onClick={() => toggleModifier(mod.class)}
                                                 label={__('Remove', 'block-style-modifiers')}
-                                                style={{ minWidth: 'auto' }}
                                             />
                                         </li>
                                     ))}
@@ -197,19 +183,14 @@ const withStyleModifiers = createHigherOrderComponent(
                         )}
 
                         {selectedClasses.length === 0 && (
-                            <p style={{
-                                color: '#757575',
-                                fontSize: '13px',
-                                fontStyle: 'italic',
-                                marginBottom: '16px'
-                            }}>
+                            <p className="block-style-modifiers__empty">
                                 {__('No modifiers selected.', 'block-style-modifiers')}
                             </p>
                         )}
 
                         {/* Available modifiers by category */}
                         <div>
-                            <strong style={{ display: 'block', marginBottom: '12px' }}>
+                            <strong className="block-style-modifiers__available-title">
                                 {__('Available Modifiers', 'block-style-modifiers')}
                             </strong>
                             {Object.keys(groupedModifiers).map(category => (
@@ -241,7 +222,7 @@ const withStyleModifiers = createHigherOrderComponent(
 
 addFilter(
     'editor.BlockEdit',
-    'bsm/with-style-modifiers',
+    'block-style-modifiers/with-style-modifiers',
     withStyleModifiers
 );
 
@@ -252,7 +233,7 @@ addFilter(
  */
 addFilter(
     'blocks.getSaveContent.extraProps',
-    'bsm/apply-style-modifiers',
+    'block-style-modifiers/apply-style-modifiers',
     (extraProps, blockType, attributes) => {
         if (!attributes?.styleModifiers?.length) {
             return extraProps;
@@ -302,6 +283,6 @@ const withStyleModifiersOnEditor = createHigherOrderComponent(
 
 addFilter(
     'editor.BlockListBlock',
-    'bsm/apply-style-modifiers-editor',
+    'block-style-modifiers/apply-style-modifiers-editor',
     withStyleModifiersOnEditor
 );

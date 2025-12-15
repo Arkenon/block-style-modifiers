@@ -4,9 +4,9 @@
  * Description: Adds additive, multi-select style modifiers to Gutenberg blocks.
  * Version: 1.0.0
  * Author: Kadim Gültekin
- * Author URI: https://kadimgultekin.com
- * License: GPL-3.0
- * License URI: https://www.gnu.org/licenses/gpl-3.0.txt
+ * Author URI: https://github.com/Arkenon
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: block-style-modifiers
  */
 
@@ -108,9 +108,13 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
             true
         );
 
-        // Dummy style handle
-        wp_register_style( 'block-style-modifiers-editor-style', false );
-        wp_enqueue_style( 'block-style-modifiers-editor-style' );
+        // Enqueue built editor stylesheet
+        wp_enqueue_style(
+            'block-style-modifiers-editor-style',
+            plugins_url( 'build/editor.css', __FILE__ ),
+            [],
+            BSM_PLUGIN_VERSION
+        );
 
         $inline_css = block_style_modifiers_collect_inline_styles();
         if ( $inline_css ) {
@@ -157,6 +161,4 @@ if ( ! function_exists( "block_style_modifiers_enqueue_frontend_styles" ) ) {
     add_action( 'wp_enqueue_scripts', 'block_style_modifiers_enqueue_frontend_styles' );
 }
 
-
-// Example Modifiers (Will be removed)
-include_once 'modifiers.php';
+include_once('modifiers.php');

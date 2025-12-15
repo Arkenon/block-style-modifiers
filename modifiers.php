@@ -2,9 +2,11 @@
 
 
 register_block_style_modifier( 'core/image', [
-    'name'  => 'rounded-corners',
-    'label' => 'Rounded corners',
-    'class' => 'img-rounded',
+    'name'         => 'rounded-corners',
+    'label'        => 'Rounded corners',
+    'class'        => 'img-rounded',
+    'description'  => 'Add smooth rounded corners to image',
+    'category'     => 'Image Effects',
     'inline_style' => '
         .wp-block-image.img-rounded img {
             border-radius: 16px;
@@ -13,9 +15,11 @@ register_block_style_modifier( 'core/image', [
 ] );
 
 register_block_style_modifier( 'core/image', [
-    'name'  => 'image-shadow',
-    'label' => 'Soft shadow',
-    'class' => 'img-shadow',
+    'name'         => 'image-shadow',
+    'label'        => 'Soft shadow',
+    'class'        => 'img-shadow',
+    'description'  => 'Add a soft shadow effect to image',
+    'category'     => 'Image Effects',
     'inline_style' => '
         .wp-block-image.img-shadow img {
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
@@ -24,9 +28,11 @@ register_block_style_modifier( 'core/image', [
 ] );
 
 register_block_style_modifier( 'core/paragraph', [
-    'name'  => 'lead-text',
-    'label' => 'Lead text',
-    'class' => 'is-lead-text',
+    'name'         => 'lead-text',
+    'label'        => 'Lead text',
+    'class'        => 'is-lead-text',
+    'description'  => 'Make text larger and more prominent',
+    'category'     => 'Text Styles',
     'inline_style' => '
         .wp-block-paragraph.is-lead-text {
             font-size: 1.25em;
@@ -36,9 +42,11 @@ register_block_style_modifier( 'core/paragraph', [
 ] );
 
 register_block_style_modifier( 'core/paragraph', [
-    'name'  => 'muted-text',
-    'label' => 'Muted text',
-    'class' => 'is-muted-text',
+    'name'         => 'muted-text',
+    'label'        => 'Muted text',
+    'class'        => 'is-muted-text',
+    'description'  => 'Reduce text opacity for less emphasis',
+    'category'     => 'Text Styles',
     'inline_style' => '
         .wp-block-paragraph.is-muted-text {
             color: #777;
@@ -49,9 +57,11 @@ register_block_style_modifier( 'core/paragraph', [
 
 
 register_block_style_modifier( '*', [
-    'name'  => 'debug-outline',
-    'label' => 'Debug outline',
-    'class' => 'debug-outline',
+    'name'         => 'debug-outline',
+    'label'        => 'Debug outline',
+    'class'        => 'debug-outline',
+    'description'  => 'Show red outline for debugging layout',
+    'category'     => 'Debug',
     'inline_style' => '
         .debug-outline {
             outline: 2px dashed red;
@@ -61,9 +71,11 @@ register_block_style_modifier( '*', [
 ] );
 
 register_block_style_modifier( 'core/group', [
-    'name'  => 'large-margin',
-    'label' => 'Large margin',
-    'class' => 'has-large-margin',
+    'name'         => 'large-margin',
+    'label'        => 'Large margin',
+    'class'        => 'has-large-margin',
+    'description'  => 'Add extra vertical spacing',
+    'category'     => 'Spacing',
     'inline_style' => '
         .wp-block-group.has-large-margin {
             margin: 4rem 0;
@@ -72,9 +84,11 @@ register_block_style_modifier( 'core/group', [
 ] );
 
 register_block_style_modifier( 'core/group', [
-    'name'  => 'no-margin',
-    'label' => 'No margin',
-    'class' => 'has-no-margin',
+    'name'         => 'no-margin',
+    'label'        => 'No margin',
+    'class'        => 'has-no-margin',
+    'description'  => 'Remove all margins',
+    'category'     => 'Spacing',
     'inline_style' => '
         .wp-block-group.has-no-margin {
             margin: 0 !important;
@@ -88,6 +102,8 @@ register_block_style_modifier( 'core/heading', [
     'name'         => 'gradient-text',
     'label'        => 'Gradient Text',
     'class'        => 'gradient-text',
+    'description'  => 'Apply gradient color to text',
+    'category'     => 'Text Effects',
     'inline_style' => '
         .wp-block-heading.gradient-text {
             background: linear-gradient(90deg, #ff7e5f, #feb47b);
@@ -102,6 +118,8 @@ register_block_style_modifier( 'core/heading', [
     'name'         => 'neon-glow',
     'label'        => 'Neon Glow',
     'class'        => 'neon-glow-text',
+    'description'  => 'Add neon glow effect to text',
+    'category'     => 'Text Effects',
     'inline_style' => '
         .wp-block-heading.neon-glow-text {
             color: #0c0c0c;
@@ -119,6 +137,8 @@ register_block_style_modifier( 'core/paragraph', [
     'name'         => 'skewed-text',
     'label'        => 'Skewed Text',
     'class'        => 'skewed-text',
+    'description'  => 'Apply skew transformation to text',
+    'category'     => 'Text Effects',
     'inline_style' => '
         .wp-block-paragraph.skewed-text {
             display: inline-block;
@@ -131,6 +151,8 @@ register_block_style_modifier( 'core/paragraph', [
     'name'         => 'shadow-3d',
     'label'        => '3D Text Shadow',
     'class'        => 'text-shadow-3d',
+    'description'  => 'Add 3D shadow effect to text',
+    'category'     => 'Text Effects',
     'inline_style' => '
         .wp-block-paragraph.text-shadow-3d {
             text-shadow:
@@ -145,6 +167,8 @@ register_block_style_modifier( 'core/heading', [
     'name'         => 'fade-in-text',
     'label'        => 'Fade In Text',
     'class'        => 'fade-in-text',
+    'description'  => 'Animate text with fade-in effect',
+    'category'     => 'Animations',
     'inline_style' => '
     .wp-block-heading {
         @keyframes fadeIn {

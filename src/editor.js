@@ -11,22 +11,51 @@ import {__} from '@wordpress/i18n';
 import {addFilter} from '@wordpress/hooks';
 import {createHigherOrderComponent} from '@wordpress/compose';
 import {InspectorControls} from '@wordpress/block-editor';
-import {PanelBody, FormTokenField} from '@wordpress/components';
+import {PanelBody, CheckboxControl, Button} from '@wordpress/components';
 import {Fragment, useState} from '@wordpress/element';
 
 /**
- * Registry helper
+ * Get modifiers for a specific block with metadata
  * @param {string} blockName Block name.
- * @returns {Object} Modifiers for the block.
+ * @returns {Array} Array of modifier objects with metadata.
  * @since 1.0.0
  */
 const getModifiersForBlock = (blockName) => {
     const registry = window.__BLOCK_STYLE_MODIFIERS__ || {};
-
-    return {
-        ...(registry['*'] || {}),
-        ...(registry[blockName] || {}),
+    
+    const globalModifiers = registry['*'] || {};
+    const blockModifiers = registry[blockName] || {};
+    
+    const allModifiers = {
+        ...globalModifiers,
+        ...blockModifiers,
     };
+    
+    // Convert to array with metadata
+    return Object.values(allModifiers).map(mod => ({
+        class: mod.class,
+        label: mod.label || mod.name,
+        description: mod.description || '',
+        category: mod.category || 'Uncategorized',
+        name: mod.name,
+    }));
+};
+
+/**
+ * Group modifiers by category
+ * @param {Array} modifiers Array of modifiers
+ * @returns {Object} Modifiers grouped by category
+ * @since 1.0.0
+ */
+const groupModifiersByCategory = (modifiers) => {
+    return modifiers.reduce((acc, mod) => {
+        const cat = mod.category || 'Uncategorized';
+        if (!acc[cat]) {
+            acc[cat] = [];
+        }
+        acc[cat].push(mod);
+        return acc;
+    }, {});
 };
 
 /**
@@ -57,32 +86,151 @@ addFilter(
 const withStyleModifiers = createHigherOrderComponent(
     (BlockEdit) => (props) => {
         const {name, attributes, setAttributes} = props;
-        const modifiers = getModifiersForBlock(name);
+        const allModifiers = getModifiersForBlock(name);
+        const groupedModifiers = groupModifiersByCategory(allModifiers);
+        const selectedClasses = attributes.styleModifiers || [];
+        
+        const [draggedIndex, setDraggedIndex] = useState(null);
 
-        const suggestions = Object.values(modifiers).map(
-            (m) => m.class
-        );
+        // Toggle modifier selection
+        const toggleModifier = (modifierClass) => {
+            const isSelected = selectedClasses.includes(modifierClass);
+            if (isSelected) {
+                setAttributes({
+                    styleModifiers: selectedClasses.filter(c => c !== modifierClass)
+                });
+            } else {
+                setAttributes({
+                    styleModifiers: [...selectedClasses, modifierClass]
+                });
+            }
+        };
 
-        // Allow only valid tokens from suggestions
-        const tokenIsValid = ( token ) => suggestions.some( value => value === token );
+        // Drag handlers
+        const handleDragStart = (e, index) => {
+            setDraggedIndex(index);
+            e.dataTransfer.effectAllowed = 'move';
+        };
+
+        const handleDragOver = (e, index) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        };
+
+        const handleDrop = (e, dropIndex) => {
+            e.preventDefault();
+            if (draggedIndex === null || draggedIndex === dropIndex) return;
+            
+            const newOrder = [...selectedClasses];
+            const [removed] = newOrder.splice(draggedIndex, 1);
+            newOrder.splice(dropIndex, 0, removed);
+            
+            setAttributes({ styleModifiers: newOrder });
+            setDraggedIndex(null);
+        };
+
+        const handleDragEnd = () => {
+            setDraggedIndex(null);
+        };
+
+        // Get selected modifiers with metadata
+        const selectedModifiers = selectedClasses.map(className => {
+            const mod = allModifiers.find(m => m.class === className);
+            return mod || { class: className, label: className };
+        });
 
         return (
             <Fragment>
                 <BlockEdit {...props} />
                 <InspectorControls>
-                    <PanelBody title={__('Style Modifiers', 'block-style-modifiers')} initialOpen={true}>
-                        <FormTokenField
-                            label={__('Modifiers', 'block-style-modifiers')}
-                            value={attributes.styleModifiers}
-                            suggestions={suggestions}
-                            __experimentalExpandOnFocus={true}
-                            __nextHasNoMarginBottom = {true}
-                            __next40pxDefaultSize = {true}
-                            onChange={(value) =>
-                                setAttributes({styleModifiers: value})
-                            }
-                            __experimentalValidateInput={ tokenIsValid }
-                        />
+                    <PanelBody 
+                        title={__('Style Modifiers', 'block-style-modifiers')} 
+                        initialOpen={true}
+                    >
+                        {/* Selected modifiers list */}
+                        {selectedClasses.length > 0 && (
+                            <div style={{ marginBottom: '16px' }}>
+                                <strong style={{ display: 'block', marginBottom: '8px' }}>
+                                    {__('Selected Modifiers', 'block-style-modifiers')}
+                                </strong>
+                                <ul style={{
+                                    margin: 0,
+                                    padding: 0,
+                                    listStyle: 'none',
+                                }}>
+                                    {selectedModifiers.map((mod, index) => (
+                                        <li
+                                            key={mod.class}
+                                            draggable={true}
+                                            onDragStart={(e) => handleDragStart(e, index)}
+                                            onDragOver={(e) => handleDragOver(e, index)}
+                                            onDrop={(e) => handleDrop(e, index)}
+                                            onDragEnd={handleDragEnd}
+                                            title={mod.description || mod.label}
+                                            style={{
+                                                padding: '8px 12px',
+                                                marginBottom: '4px',
+                                                backgroundColor: draggedIndex === index ? '#e0e0e0' : '#f0f0f0',
+                                                border: '1px solid #ddd',
+                                                borderRadius: '4px',
+                                                cursor: 'move',
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                            }}
+                                        >
+                                            <span style={{ fontSize: '13px' }}>
+                                                ⋮⋮ {mod.label}
+                                            </span>
+                                            <Button
+                                                isSmall
+                                                variant="tertiary"
+                                                icon="no-alt"
+                                                onClick={() => toggleModifier(mod.class)}
+                                                label={__('Remove', 'block-style-modifiers')}
+                                                style={{ minWidth: 'auto' }}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        {selectedClasses.length === 0 && (
+                            <p style={{
+                                color: '#757575',
+                                fontSize: '13px',
+                                fontStyle: 'italic',
+                                marginBottom: '16px'
+                            }}>
+                                {__('No modifiers selected.', 'block-style-modifiers')}
+                            </p>
+                        )}
+
+                        {/* Available modifiers by category */}
+                        <div>
+                            <strong style={{ display: 'block', marginBottom: '12px' }}>
+                                {__('Available Modifiers', 'block-style-modifiers')}
+                            </strong>
+                            {Object.keys(groupedModifiers).map(category => (
+                                <PanelBody
+                                    key={category}
+                                    title={category}
+                                    initialOpen={false}
+                                >
+                                    {groupedModifiers[category].map(modifier => (
+                                        <CheckboxControl
+                                            key={modifier.class}
+                                            label={modifier.label}
+                                            title={modifier.description}
+                                            checked={selectedClasses.includes(modifier.class)}
+                                            onChange={() => toggleModifier(modifier.class)}
+                                            __nextHasNoMarginBottom={true}
+                                        />
+                                    ))}
+                                </PanelBody>
+                            ))}
+                        </div>
                     </PanelBody>
                 </InspectorControls>
             </Fragment>

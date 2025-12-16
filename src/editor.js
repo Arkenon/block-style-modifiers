@@ -25,21 +25,43 @@ const getModifiersForBlock = (blockName) => {
     const registry = window.__BLOCK_STYLE_MODIFIERS__ || {};
     
     const globalModifiers = registry['*'] || {};
-    const blockModifiers = registry[blockName] || {};
-    
-    const allModifiers = {
-        ...globalModifiers,
-        ...blockModifiers,
-    };
-    
-    // Convert to array with metadata
-    return Object.values(allModifiers).map(mod => ({
-        class: mod.class,
-        label: mod.label || mod.name,
-        description: mod.description || '',
-        category: mod.category || 'Uncategorized',
-        name: mod.name,
-    }));
+
+    // Check if blockName is an array
+    if(Array.isArray(blockName)) {
+        let combinedModifiers = {...globalModifiers};
+        blockName.forEach(name => {
+            const blockMods = registry[name] || {};
+            combinedModifiers = {
+                ...combinedModifiers,
+                ...blockMods,
+            };
+        });
+        return Object.values(combinedModifiers).map(mod => ({
+            class: mod.class,
+            label: mod.label || mod.name,
+            description: mod.description || '',
+            category: mod.category || 'Uncategorized',
+            name: mod.name,
+        }));
+
+    } else {
+        // Single block name
+        const blockModifiers = registry[blockName] || {};
+
+        const allModifiers = {
+            ...globalModifiers,
+            ...blockModifiers,
+        };
+
+        // Convert to array with metadata
+        return Object.values(allModifiers).map(mod => ({
+            class: mod.class,
+            label: mod.label || mod.name,
+            description: mod.description || '',
+            category: mod.category || 'Uncategorized',
+            name: mod.name,
+        }));
+    }
 };
 
 /**

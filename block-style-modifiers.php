@@ -38,13 +38,34 @@ if ( ! function_exists( "register_block_style_modifier" ) ) {
      * Register a block style modifier.
      * Registers a style modifier for a specific block.
      *
+     * @param string|array $block_name
+     * @param array $modifier
+     *
+     * @return void
+     * @since 1.0.0
+     */
+    function register_block_style_modifier( $block_name, array $modifier ): void {
+        if ( is_array( $block_name ) ) {
+            foreach ( $block_name as $block ) {
+                block_style_modifier_register_single_modifier( $block, $modifier );
+            }
+        } else {
+            block_style_modifier_register_single_modifier( $block_name, $modifier );
+        }
+    }
+}
+
+if ( ! function_exists( "block_style_modifier_register_single_modifier" ) ) {
+    /**
+     * Register a single block style modifier.
+     *
      * @param string $block_name
      * @param array $modifier
      *
      * @return void
      * @since 1.0.0
      */
-    function register_block_style_modifier( string $block_name, array $modifier ): void {
+    function block_style_modifier_register_single_modifier( string $block_name, array $modifier ) {
         $registry = &block_style_modifiers_get_registry();
 
         if ( empty( $modifier['name'] ) || empty( $modifier['class'] ) ) {
@@ -102,7 +123,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
     function block_style_modifiers_enqueue_editor_assets(): void {
         wp_enqueue_script(
             'block-style-modifiers-editor',
-            BSM_PLUGIN_URL.'/build/editor.js',
+            BSM_PLUGIN_URL . '/build/editor.js',
             [ 'wp-blocks', 'wp-element', 'wp-components', 'wp-compose', 'wp-data', 'wp-hooks', 'wp-editor' ],
             BSM_PLUGIN_VERSION,
             true
@@ -116,7 +137,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
         // Enqueue built editor stylesheet
         wp_enqueue_style(
             'block-style-modifiers-editor-style',
-            BSM_PLUGIN_URL.'/build/editor.css',
+            BSM_PLUGIN_URL . '/build/editor.css',
             [],
             BSM_PLUGIN_VERSION
         );
@@ -165,5 +186,3 @@ if ( ! function_exists( "block_style_modifiers_enqueue_frontend_styles" ) ) {
 
     add_action( 'wp_enqueue_scripts', 'block_style_modifiers_enqueue_frontend_styles' );
 }
-
-include_once('modifiers.php');

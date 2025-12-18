@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constants
-define( 'BSM_PLUGIN_VERSION', '1.0.0' );
+define( 'BSM_PLUGIN_VERSION', get_file_data( __FILE__, array( 'version' => 'Version' ) )['version'] );
 define( 'BSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -33,7 +33,7 @@ if ( ! function_exists( "block_style_modifiers_get_registry" ) ) {
     }
 }
 
-if ( ! function_exists( "register_block_style_modifier" ) ) {
+if ( ! function_exists( "block_style_modifiers_register_style" ) ) {
     /**
      * Register a block style modifier.
      * Registers a style modifier for a specific block.
@@ -44,18 +44,18 @@ if ( ! function_exists( "register_block_style_modifier" ) ) {
      * @return void
      * @since 1.0.0
      */
-    function register_block_style_modifier( $block_name, array $modifier ): void {
+    function block_style_modifiers_register_style( $block_name, array $modifier ): void {
         if ( is_array( $block_name ) ) {
             foreach ( $block_name as $block ) {
-                block_style_modifier_register_single_modifier( $block, $modifier );
+                block_style_modifiers_register_single_modifier( $block, $modifier );
             }
         } else {
-            block_style_modifier_register_single_modifier( $block_name, $modifier );
+            block_style_modifiers_register_single_modifier( $block_name, $modifier );
         }
     }
 }
 
-if ( ! function_exists( "block_style_modifier_register_single_modifier" ) ) {
+if ( ! function_exists( "block_style_modifiers_register_single_modifier" ) ) {
     /**
      * Register a single block style modifier.
      *
@@ -65,7 +65,7 @@ if ( ! function_exists( "block_style_modifier_register_single_modifier" ) ) {
      * @return void
      * @since 1.0.0
      */
-    function block_style_modifier_register_single_modifier( string $block_name, array $modifier ) {
+    function block_style_modifiers_register_single_modifier( string $block_name, array $modifier ) {
         $registry = &block_style_modifiers_get_registry();
 
         if ( empty( $modifier['name'] ) || empty( $modifier['class'] ) ) {
@@ -159,7 +159,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
         );
     }
 
-    add_action( 'enqueue_block_editor_assets', 'block_style_modifiers_enqueue_editor_assets' );
+    add_action( 'enqueue_block_editor_assets','block_style_modifiers_enqueue_editor_assets');
 }
 
 
@@ -175,7 +175,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_frontend_styles" ) ) {
             return;
         }
 
-        wp_register_style( 'block-style-modifiers-style', false );
+        wp_register_style( 'block-style-modifiers-style', false, [], BSM_PLUGIN_VERSION );
         wp_enqueue_style( 'block-style-modifiers-style' );
 
         wp_add_inline_style(

@@ -5,6 +5,10 @@ The WordPress Block Editor currently supports Block Styles as mutually exclusive
 This project introduces the concept of Style Modifiers — optional, multi-select CSS classes that can be applied to blocks in a controlled, discoverable, and user-friendly way.
 Style Modifiers are not a replacement for Block Styles. They are a complementary concept that fills a well-known gap without changing existing Core behavior.
 
+
+![Block Style Modifiers](https://kadimgultekin.com/wp-content/uploads/2025/12/block_style_modifiers_ss.jpg)
+
+
 **What Problem Does This Solve?**
 
 Current situation:
@@ -16,7 +20,7 @@ Additive styling is only possible via:
 - Custom block attributes (developer-specific, not standardized)
 
 Result:
-- Users cannot combine small visual tweaks (e.g. no-margin + has-border)
+- Users cannot combine small visual tweaks (e.g. zoom-on-hover + grayscale-on-hover)
 - Theme authors invent ad-hoc solutions
 - UX is inconsistent across themes and plugins
 
@@ -30,43 +34,40 @@ Style Modifiers are additive CSS classes that:
  - Preserve class order, allowing advanced CSS control
  - They behave like checkboxes, not radio buttons.
 
+**Note:** There is available an experimental plugin includes blocks style modifiers:  [Block Style Modifier Pack](https://github.com/Arkenon/block-style-modifier-pack) plugin to function.
+
 Registering a block style modifier:
-
 ```php
-// Example: No bottom margin modifier for Columns block
-register_block_style_modifier( 'core/columns', [
-    'name'  => 'no-bottom-margin',
-    'label' => 'No bottom margin',
-    'class' => 'no-margin-bottom',
-    'inline_style' => '
-        .wp-block-columns.no-margin-bottom {
-            margin-bottom: 0 !important;
-        }
-    ',
+// Example: Register a style modifier for multiple blocks
+ block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+    'name'        => 'zoom-on-hover',
+    'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
+    'class'       => 'bsmp-zoom-on-hover',
+    'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ),
+    'category'    => __( 'Hover Effects', 'block-style-modifier-pack' ),
+ ] );
+
+// Register a style modifier for a single block
+block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+    'name'        => 'hover-overlay-dark',
+    'label'       => __( 'Dark Overlay on Hover', 'block-style-modifier-pack' ),
+    'class'       => 'bsmp-hover-overlay-dark',
+    'description' => __( 'Dark semi-transparent overlay appears on hover', 'block-style-modifier-pack' ),
+    'category'    => __( 'Overlay Effects', 'block-style-modifier-pack' ),
 ] );
 
-// Example: Lead text modifier for Paragraph block
-register_block_style_modifier( 'core/paragraph', [
-    'name'  => 'lead-text',
-    'label' => 'Lead text',
-    'class' => 'is-lead-text',
+// Example: Global modifier for all blocks with inline style
+block_style_modifiers_register_style( '*', [
+    'name'         => 'hide-sm',
+    'label'        => 'Hide on Small Screens',
+    'class'        => 'bsmp-hide-sm',
+    'description'  => __( 'Hide block on small (max-width: 600px) screens'),
+    'category'     => __( 'Responsive'),
     'inline_style' => '
-        .wp-block-paragraph.is-lead-text {
-            font-size: 1.25em;
-            line-height: 1.6;
-        }
-    ',
-] );
-
-// Example: Global modifier for all blocks
-register_block_style_modifier( '*', [
-    'name'  => 'debug-outline',
-    'label' => 'Debug outline',
-    'class' => 'debug-outline',
-    'inline_style' => '
-        .debug-outline {
-            outline: 2px dashed red;
-            outline-offset: -2px;
+        @media (max-width: 600px) {
+        .bsmp-hide-sm {
+                display: none !important;
+            }
         }
     ',
 ] );
@@ -75,74 +76,9 @@ register_block_style_modifier( '*', [
 Example result in markup:
 
 ```html
-    <div class="wp-block-paragraph is-style-default debug-outline is-lead-text">
+    <div class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm">
+        ...
  ```
-    
-
-**Why This Does NOT Belong in WordPress Core (Yet)**
-
-This project intentionally exists outside Core, for the following reasons:
-
-*1. Core Block Styles are intentionally exclusive*
-- Block Styles were designed as variations, not modifiers.
-- Changing this assumption would require:
-- New UX paradigms
-- New data models
-- Backward-compatibility guarantees
-- Introducing Style Modifiers in Core would blur the semantic meaning of “Block Style”.
-
-*2. Core must optimize for non-technical users*
-
-WordPress Core has to assume:
-- No CSS knowledge
-- No understanding of specificity or class order
-- Minimal configuration
-- Additive styling introduces:
-- More combinations
-- More chances for visual conflicts
-- More support burden
-- While advanced users accept this trade-off, Core must be conservative.
-
-*3. Core already provides an escape hatch*
-
-The existence of “Additional CSS Class(es)” proves that:
-- WordPress already allows:
-- Multiple classes
-- Arbitrary class order
-- Style conflicts are already possible
-- Responsibility is already partially delegated to the user
-- Style Modifiers simply provide a structured, safer alternative — but Core is not obligated to formalize it.
-
-*4. Design Tools are still evolving*
-
-Core is actively investing in:
-- Global Styles
-- theme.json
-- Visual design controls
-
-**Introducing Style Modifiers prematurely could:**
-
-- Compete with future native solutions
-- Lock Core into early API decisions
-- An experimental plugin is the correct incubation space.
-
-**Why This SHOULD Exist as a Plugin**
-
-*1. It solves a real, existing need today*
-- Theme and block developers already:
-- Invent “utility classes”
-- Expose undocumented class names
-- Rely on custom Inspector controls
-- This plugin standardizes an existing pattern.
-
-*2. It respects Core philosophy*
-
-- Block Styles remain single-select
-- No Core APIs are modified
-- No assumptions are broken
-- This is an extension, not a fork.
-
-*3. It empowers theme authors, not random users*
 
 Modifiers are:
 - Predefined
@@ -151,17 +87,6 @@ Modifiers are:
 - Block-specific if desired
 
 This makes them safer than free-text CSS classes, not riskier.
-
-*4. It can inform future Core decisions*
-
-As a plugin, this project can:
-- Validate UX patterns
-- Reveal real-world usage
-- Provide data-driven feedback
-
-If Core ever adopts a similar concept, this plugin can act as:
-- A reference implementation
-- A proven design experiment
 
 **Design Principles**
 
@@ -181,8 +106,8 @@ If Core ever adopts a similar concept, this plugin can act as:
 
 **Those responsibilities belong to:**
 
--Themes
--Documentation
+- Themes
+- Documentation
 - Education
 - Conclusion
 
@@ -193,3 +118,31 @@ If Core ever adopts a similar concept, this plugin can act as:
 - They do not weaken WordPress Core — they respect its boundaries.
 
 That is precisely why they belong in a plugin.
+
+**Contributing**
+Have ideas for additional modifiers? Found a bug? Contributions are welcome!
+
+- Fork the repository
+- Create your feature branch (`git checkout -b feature/my-feature`)
+- Commit your changes (`git commit -am 'Add some feature'`)
+- Push to the branch (`git push origin feature/my-feature`)
+- Open a pull request
+- Please ensure any pull requests adhere to the existing coding style and include appropriate tests where applicable.
+- For major changes, please open an issue first to discuss what you would like to change.
+- Please make sure to update tests as appropriate.
+
+**License**
+This project is licensed under the GPLv2 or later license. See the LICENSE file for details
+
+** Installation **
+1. Upload the `block-style-modifiers` folder to `/wp-content/plugins/`
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Style modifiers can now be registered by themes or plugins and will appear in the Block Editor sidebar for related core blocks.
+
+** Development **
+
+To set up a development environment for the Block Style Modifiers plugin, follow these steps:
+1. Clone the repository to your local machine
+2. Install dependencies using Composer or npm if applicable (npm install)
+3. Build the plugin using the provided build scripts (npm run build)
+   

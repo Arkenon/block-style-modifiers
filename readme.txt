@@ -1,6 +1,6 @@
 === Block Style Modifiers ===
 Contributors: arkenon
-Tags: block styles, gutenberg, block editor, style variations
+Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
 Stable tag: 1.0.0
@@ -13,51 +13,62 @@ Add multiple block styles to Gutenberg blocks with ease.
 
 Block Style Modifiers is a simple WordPress plugin that allows you to add multiple block styles to Gutenberg blocks.
 
+![Block Style Modifiers](https://kadimgultekin.com/wp-content/uploads/2025/12/block_style_modifiers_ss.jpg)
+
 Style Modifiers are additive CSS classes that:
 
- - Can be applied in addition to a Block Style
- - Can be selected multiple at the same time
- - Are predefined and documented by themes or plugins
- - Preserve class order, allowing advanced CSS control
- - They behave like checkboxes, not radio buttons.
+* Can be applied in addition to a Block Style
+* Can be selected multiple at the same time
+* Are predefined and documented by themes or plugins
+* Preserve class order, allowing advanced CSS control
 
-Registering a block style modifier:
+== Features ==
+* Register multiple style modifiers for any block type
+* Apply multiple style modifiers to a single block
+* Global style modifiers that apply to all blocks
+* Inline CSS support for easy styling of modifiers
+
+== Usage ==
+* Define your style modifiers using the `register_block_style_modifier` function via your theme's `functions.php` file or a custom plugin.
+* Select style modifiers in the block editor sidebar under "Block Style Modifiers".
+* Style modifiers will be applied as additional CSS classes to the block's wrapper element.
+* It is possible that reordering of classes may affect CSS specificity and styling.
+
+**Note:** There is available an experimental plugin includes blocks style modifiers:  [Block Style Modifier Pack](https://github.com/Arkenon/block-style-modifier-pack) plugin to function.
+
+== Registering a Block Style Modifier ==
 
 ```php
-// Example: No bottom margin modifier for Columns block
-register_block_style_modifier( 'core/columns', [
-    'name'  => 'no-bottom-margin',
-    'label' => 'No bottom margin',
-    'class' => 'no-margin-bottom',
-    'inline_style' => '
-        .wp-block-columns.no-margin-bottom {
-            margin-bottom: 0 !important;
-        }
-    ',
+// Example: Register a style modifier for multiple blocks
+ block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+    'name'        => 'zoom-on-hover',
+    'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
+    'class'       => 'bsmp-zoom-on-hover',
+    'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ),
+    'category'    => __( 'Hover Effects', 'block-style-modifier-pack' ),
+ ] );
+
+// Register a style modifier for a single block
+block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+    'name'        => 'hover-overlay-dark',
+    'label'       => __( 'Dark Overlay on Hover', 'block-style-modifier-pack' ),
+    'class'       => 'bsmp-hover-overlay-dark',
+    'description' => __( 'Dark semi-transparent overlay appears on hover', 'block-style-modifier-pack' ),
+    'category'    => __( 'Overlay Effects', 'block-style-modifier-pack' ),
 ] );
 
-// Example: Lead text modifier for Paragraph block
-register_block_style_modifier( 'core/paragraph', [
-    'name'  => 'lead-text',
-    'label' => 'Lead text',
-    'class' => 'is-lead-text',
+// Example: Global modifier for all blocks with inline style
+block_style_modifiers_register_style( '*', [
+    'name'         => 'hide-sm',
+    'label'        => 'Hide on Small Screens',
+    'class'        => 'bsmp-hide-sm',
+    'description'  => __( 'Hide block on small (max-width: 600px) screens'),
+    'category'     => __( 'Responsive'),
     'inline_style' => '
-        .wp-block-paragraph.is-lead-text {
-            font-size: 1.25em;
-            line-height: 1.6;
-        }
-    ',
-] );
-
-// Example: Global modifier for all blocks
-register_block_style_modifier( '*', [
-    'name'  => 'debug-outline',
-    'label' => 'Debug outline',
-    'class' => 'debug-outline',
-    'inline_style' => '
-        .debug-outline {
-            outline: 2px dashed red;
-            outline-offset: -2px;
+        @media (max-width: 600px) {
+        .bsmp-hide-sm {
+                display: none !important;
+            }
         }
     ',
 ] );
@@ -66,7 +77,8 @@ register_block_style_modifier( '*', [
 Example result in markup:
 
 ```html
-    <div class="wp-block-paragraph is-style-default debug-outline is-lead-text">
+    <div class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm">
+        ...
  ```
 
 == Installation ==

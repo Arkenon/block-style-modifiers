@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Block Style Modifiers
  * Description: Adds additive, multi-select style modifiers to Gutenberg blocks.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Kadim Gültekin
  * Author URI: https://github.com/Arkenon
  * License: GPLv2 or later
@@ -38,13 +38,35 @@ if ( ! function_exists( "block_style_modifiers_register_style" ) ) {
      * Register a block style modifier.
      * Registers a style modifier for a specific block.
      *
-     * @param string|array $block_name
-     * @param array $modifier
+     * @param string|array $block_name Block type name including namespace or array of namespaced block type names.
+     * @param array $modifier Array containing the properties of the style modifier: name, label, class, description, category, inline_style
      *
      * @return void
      * @since 1.0.0
      */
     function block_style_modifiers_register_style( $block_name, array $modifier ): void {
+
+        // Validate if block name and modifier name are string or array
+        if ( ! is_string( $block_name ) && ! is_array( $block_name ) ) {
+            return;
+        }
+
+        // Validate modifier name is set and is a string without spaces
+        if ( ! isset( $modifier['name'] ) || ! is_string( $modifier['name'] ) ) {
+            return;
+        }
+
+        // Validate modifier name does not contain spaces
+        if ( str_contains( $modifier['name'], ' ' ) ) {
+            return;
+        }
+
+        // Validate modifier class is set and is a string
+        if ( ! isset( $modifier['class'] ) || ! is_string( $modifier['class'] ) ) {
+            return;
+        }
+
+
         if ( is_array( $block_name ) ) {
             foreach ( $block_name as $block ) {
                 block_style_modifiers_register_single_modifier( $block, $modifier );
@@ -59,8 +81,8 @@ if ( ! function_exists( "block_style_modifiers_register_single_modifier" ) ) {
     /**
      * Register a single block style modifier.
      *
-     * @param string $block_name
-     * @param array $modifier
+     * @param string $block_name Block type name including namespace.
+     * @param array $modifier Array containing the properties of the style modifier: name, label, class, description, category, inline_style
      *
      * @return void
      * @since 1.0.0
@@ -68,9 +90,6 @@ if ( ! function_exists( "block_style_modifiers_register_single_modifier" ) ) {
     function block_style_modifiers_register_single_modifier( string $block_name, array $modifier ) {
         $registry = &block_style_modifiers_get_registry();
 
-        if ( empty( $modifier['name'] ) || empty( $modifier['class'] ) ) {
-            return;
-        }
 
         if ( ! isset( $registry[ $block_name ] ) ) {
             $registry[ $block_name ] = [];
@@ -103,7 +122,7 @@ if ( ! function_exists( "block_style_modifiers_collect_inline_styles" ) ) {
         foreach ( $registry as $block => $modifiers ) {
             foreach ( $modifiers as $modifier ) {
                 if ( ! empty( $modifier['inline_style'] ) ) {
-                    $styles .= "\n" . $modifier['inline_style'];
+                    $styles .= $modifier['inline_style'];
                 }
             }
         }
@@ -146,7 +165,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
         if ( $inline_css ) {
             wp_add_inline_style(
                 'block-style-modifiers-editor-style',
-                $inline_css
+                esc_html( $inline_css )
             );
         }
 
@@ -159,7 +178,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
         );
     }
 
-    add_action( 'enqueue_block_editor_assets','block_style_modifiers_enqueue_editor_assets');
+    add_action( 'enqueue_block_editor_assets', 'block_style_modifiers_enqueue_editor_assets' );
 }
 
 
@@ -180,7 +199,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_frontend_styles" ) ) {
 
         wp_add_inline_style(
             'block-style-modifiers-style',
-            $inline_css
+            esc_html( $inline_css )
         );
     }
 

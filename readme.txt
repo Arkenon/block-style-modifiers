@@ -3,7 +3,7 @@ Contributors: arkenon
 Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,17 @@ Example result in markup:
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Add your custom style modifiers using the `register_block_style_modifier` function in your theme's `functions.php` file or a custom plugin.
 
+
+== Source Code ==
+
+It is available on GitHub:
+* GitHub: https://github.com/Arkenon/block-style-modifiers
+
 == Changelog ==
+
+= 1.0.1 =
+* Added: Source code section in readme.
+* Escaped: $inline_style variable to prevent potential security issues.
 
 = 1.0.0 =
 * Initial release of Block Style Modifiers.

@@ -3,7 +3,7 @@ Contributors: arkenon
 Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,26 +36,26 @@ Style Modifiers are additive CSS classes that:
 
 == Registering a Block Style Modifier ==
 
-`// Example: Register a style modifier for multiple blocks
- block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+// Example: Register a style modifier for multiple blocks
+`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
     'name'        => 'zoom-on-hover',
     'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
     'class'       => 'bsmp-zoom-on-hover',
     'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ),
     'category'    => __( 'Hover Effects', 'block-style-modifier-pack' ),
- ] );
+ ] );`
 
 // Register a style modifier for a single block
-block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
     'name'        => 'hover-overlay-dark',
     'label'       => __( 'Dark Overlay on Hover', 'block-style-modifier-pack' ),
     'class'       => 'bsmp-hover-overlay-dark',
     'description' => __( 'Dark semi-transparent overlay appears on hover', 'block-style-modifier-pack' ),
     'category'    => __( 'Overlay Effects', 'block-style-modifier-pack' ),
-] );
+] );`
 
 // Example: Global modifier for all blocks with inline style
-block_style_modifiers_register_style( '*', [
+`block_style_modifiers_register_style( '*', [
     'name'         => 'hide-sm',
     'label'        => 'Hide on Small Screens',
     'class'        => 'bsmp-hide-sm',
@@ -89,6 +89,9 @@ It is available on GitHub:
 * GitHub: https://github.com/Arkenon/block-style-modifiers
 
 == Changelog ==
+
+= 1.0.2 =
+Updated: readme.txt
 
 = 1.0.1 =
 * Added: Source code section in readme.

@@ -13,8 +13,6 @@ Add multiple block styles to Gutenberg blocks with ease.
 
 Block Style Modifiers is a simple WordPress plugin that allows you to add multiple block styles to Gutenberg blocks.
 
-![Block Style Modifiers](https://kadimgultekin.com/wp-content/uploads/2025/12/block_style_modifiers_ss.jpg)
-
 Style Modifiers are additive CSS classes that:
 
 * Can be applied in addition to a Block Style
@@ -38,8 +36,7 @@ Style Modifiers are additive CSS classes that:
 
 == Registering a Block Style Modifier ==
 
-```php
-// Example: Register a style modifier for multiple blocks
+`// Example: Register a style modifier for multiple blocks
  block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
     'name'        => 'zoom-on-hover',
     'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
@@ -71,15 +68,12 @@ block_style_modifiers_register_style( '*', [
             }
         }
     ',
-] );
-```
+] );`
+
 
 Example result in markup:
 
-```html
-    <div class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm">
-        ...
- ```
+`<div class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm">`
 
 == Installation ==
 1. You have a couple options:

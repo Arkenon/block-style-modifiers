@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Block Style Modifiers
  * Description: Adds additive, multi-select style modifiers to Gutenberg blocks.
- * Version: 1.0.2
+ * Version: 1.0.4
  * Author: Kadim Gültekin
  * Author URI: https://github.com/Arkenon
  * License: GPLv2 or later

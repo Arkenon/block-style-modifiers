@@ -3,14 +3,14 @@ Contributors: arkenon
 Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
-Stable tag: 1.0.2
+Requires PHP: 7.4
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Add multiple block styles to Gutenberg blocks with ease.
 
 == Description ==
-
 Block Style Modifiers is a simple WordPress plugin that allows you to add multiple block styles to Gutenberg blocks.
 
 Style Modifiers are additive CSS classes that:
@@ -27,7 +27,7 @@ Style Modifiers are additive CSS classes that:
 * Inline CSS support for easy styling of modifiers
 
 == Usage ==
-* Define your style modifiers using the `register_block_style_modifier` function via your theme's `functions.php` file or a custom plugin.
+* Define your style modifiers using the `block_style_modifiers_register_style` function via your theme's `functions.php` file or a custom plugin.
 * Select style modifiers in the block editor sidebar under "Block Style Modifiers".
 * Style modifiers will be applied as additional CSS classes to the block's wrapper element.
 * It is possible that reordering of classes may affect CSS specificity and styling.
@@ -36,44 +36,17 @@ Style Modifiers are additive CSS classes that:
 
 == Registering a Block Style Modifier ==
 
-// Example: Register a style modifier for multiple blocks
-`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
-    'name'        => 'zoom-on-hover',
-    'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
-    'class'       => 'bsmp-zoom-on-hover',
-    'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ),
-    'category'    => __( 'Hover Effects', 'block-style-modifier-pack' ),
- ] );`
+`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], ['name' => 'zoom-on-hover', 'label' => __( 'Zoom on Hover', 'block-style-modifier-pack' ), 'class'=> 'bsmp-zoom-on-hover', 'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ), 'category' => __( 'Hover Effects', 'block-style-modifier-pack' ),] );`
 
-// Register a style modifier for a single block
-`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
-    'name'        => 'hover-overlay-dark',
-    'label'       => __( 'Dark Overlay on Hover', 'block-style-modifier-pack' ),
-    'class'       => 'bsmp-hover-overlay-dark',
-    'description' => __( 'Dark semi-transparent overlay appears on hover', 'block-style-modifier-pack' ),
-    'category'    => __( 'Overlay Effects', 'block-style-modifier-pack' ),
-] );`
+== Example Result in Markup ==
 
-// Example: Global modifier for all blocks with inline style
-`block_style_modifiers_register_style( '*', [
-    'name'         => 'hide-sm',
-    'label'        => 'Hide on Small Screens',
-    'class'        => 'bsmp-hide-sm',
-    'description'  => __( 'Hide block on small (max-width: 600px) screens'),
-    'category'     => __( 'Responsive'),
-    'inline_style' => '
-        @media (max-width: 600px) {
-        .bsmp-hide-sm {
-                display: none !important;
-            }
-        }
-    ',
-] );`
+`class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm"`
 
+It is important to note that the order of classes may affect CSS specificity and styling. You can easily order your CSS rules with drag/drop functionality in the Block Editor.
 
-Example result in markup:
-
-`<div class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm">`
+== Source Code ==
+It is available on GitHub:
+* GitHub: https://github.com/Arkenon/block-style-modifiers
 
 == Installation ==
 1. You have a couple options:
@@ -82,13 +55,13 @@ Example result in markup:
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Add your custom style modifiers using the `register_block_style_modifier` function in your theme's `functions.php` file or a custom plugin.
 
-
-== Source Code ==
-
-It is available on GitHub:
-* GitHub: https://github.com/Arkenon/block-style-modifiers
-
 == Changelog ==
+
+= 1.0.4 =
+Updated: readme.txt
+
+= 1.0.3 =
+Updated: readme.txt
 
 = 1.0.2 =
 Updated: readme.txt

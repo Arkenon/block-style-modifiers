@@ -47,13 +47,41 @@ Categories must be defined as objects with:
 * Theme-independent default modifiers via Block Style Modifier Pack
 
 = Default Modifiers =
-Plugin provides a set of default style modifiers that can be used with any theme:
-* **Animations** - Fade In, Slide Up, Scale In
-* **Animation Delay** - Fast, Normal, Slow
-* **Hover Effects** - Zoom, Rotate, Bounce, Grayscale
-* **Text Effects** - Underline Reveal, Text Fade
+Block Style Modifiers includes theme-independent default modifiers that work with any WordPress theme:
 
-All default modifiers are theme-independent and performance-optimized.
+**Philosophy:**
+* Enhance behavior, not visual design
+* No borders, shadows, spacing, or color palettes
+* Work with any theme without conflicts
+* Atomic and performant
+* Respect prefers-reduced-motion
+
+**Available Categories:**
+
+**Animations (Exclusive)** - Entrance animations for blocks
+* Fade In - Smooth fade entrance
+* Slide Up - Slide from bottom
+* Scale In - Scale up animation
+Blocks: Group, Row, Stack, Grid, Column, Columns, Heading, Paragraph, Image, Cover
+
+**Animation Delay (Exclusive)** - Control animation timing
+* Fast (0.2s)
+* Normal (0.4s)
+* Slow (0.8s)
+
+**Hover Effects (Exclusive)** - Transform-based hover interactions
+* Zoom In on Hover
+* Subtle Rotate on Hover
+* Bounce on Hover
+* Grayscale on Hover (Image/Cover only)
+Blocks: Group, Column, Columns, Image, Cover, Media & Text
+
+**Text Effects (Exclusive)** - Micro-interactions for text
+* Underline Reveal on Hover
+* Soft Text Fade on Hover
+Blocks: Paragraph, Heading
+
+All default modifiers respect accessibility preferences and are disabled when prefers-reduced-motion is set.
 
 You can easily extend or override these defaults by registering your own style modifiers in your theme or custom plugin.
 

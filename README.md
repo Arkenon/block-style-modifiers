@@ -131,14 +131,44 @@ This makes them safer than free-text CSS classes, not riskier.
 
 **Default Modifiers**
 
-The [Block Style Modifier Pack](https://github.com/Arkenon/block-style-modifier-pack) plugin provides theme-independent, universal style modifiers that work with any WordPress theme:
+Block Style Modifiers comes with **theme-independent default modifiers** that work with any WordPress theme without conflicts.
 
-**Animations** (Exclusive Category)
-- Fade In - Smooth entrance animation
-- Slide Up - Slide from bottom
-- Scale In - Scale up animation
+**Philosophy**
+- ✅ Enhance **behavior**, not visual design
+- ✅ No borders, shadows, spacing, or color palettes
+- ✅ Work with **any theme** without conflicts
+- ✅ Atomic and performant
+- ✅ Respect `prefers-reduced-motion`
 
-**Animation Delay** (Exclusive Category)
+**1️⃣ Animations** (Exclusive Category)
+Blocks: Group, Row, Stack, Grid, Column, Columns, Heading, Paragraph, Image, Cover
+- **Fade In** - Smooth entrance animation with fade effect
+- **Slide Up** - Slide from bottom with fade effect
+- **Scale In** - Scale up animation with fade effect
+
+**2️⃣ Animation Delay** (Exclusive Category)
+Works with Animation category
+- **Fast (0.2s)** - Quick animation start
+- **Normal (0.4s)** - Standard animation delay
+- **Slow (0.8s)** - Delayed animation start
+
+**3️⃣ Hover Effects** (Exclusive Category)
+Blocks: Group, Column, Columns, Image, Cover, Media & Text
+- **Zoom In on Hover** - Block scales up on hover
+- **Subtle Rotate on Hover** - Block rotates slightly on hover
+- **Bounce on Hover** - Very subtle bounce animation on hover
+- **Grayscale on Hover** - Image appears grayscale and reveals color on hover (Image/Cover only)
+
+**4️⃣ Text Effects** (Exclusive Category)
+Blocks: Paragraph, Heading
+- **Underline Reveal on Hover** - Animated underline appears on hover
+- **Soft Text Fade on Hover** - Text softly fades on hover
+
+All default modifiers respect user preferences and animations are disabled when `prefers-reduced-motion` is set.
+
+---
+
+**Creating Custom Modifiers**All default modifiers respect user preferences and animations are disabled when `prefers-reduced-motion` is set.
 - Fast (0.2s)
 - Normal (0.4s)
 - Slow (0.8s)

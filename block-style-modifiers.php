@@ -19,7 +19,6 @@ define( 'BSM_PLUGIN_VERSION', get_file_data( __FILE__, array( 'version' => 'Vers
 define( 'BSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-
 if ( ! function_exists( "block_style_modifiers_get_registry" ) ) {
     /**
      * Get the registry of block style modifiers.
@@ -178,7 +177,7 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
         );
     }
 
-    add_action( 'enqueue_block_editor_assets', 'block_style_modifiers_enqueue_editor_assets' );
+
 }
 
 
@@ -203,5 +202,13 @@ if ( ! function_exists( "block_style_modifiers_enqueue_frontend_styles" ) ) {
         );
     }
 
-    add_action( 'wp_enqueue_scripts', 'block_style_modifiers_enqueue_frontend_styles' );
+
 }
+
+add_action('plugins_loaded', function (){
+    // Include default modifiers
+    require_once BSM_PLUGIN_DIR . 'inc/default-modifiers.php';
+
+    add_action( 'wp_enqueue_scripts', 'block_style_modifiers_enqueue_frontend_styles' );
+    add_action( 'enqueue_block_editor_assets', 'block_style_modifiers_enqueue_editor_assets' );
+});

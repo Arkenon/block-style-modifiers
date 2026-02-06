@@ -1,5 +1,5 @@
 /**
- * Block Style Modifier Pack - Default Styles
+ * Block Style Modifiers - Default Styles
  * Theme-independent, universal style modifiers for WordPress blocks
  *
  * Philosophy:
@@ -8,13 +8,14 @@
  * - Work with any theme without conflicts
  * - Atomic and performant
  *
- * @package Block_Style_Modifier
- * @version 1.0.0
+ * @package Block_Style_Modifiers
+ * @version 1.0.6
  */
 
 /* ========================================
    1️⃣ ANIMATIONS (Entrance)
    Category: Exclusive (radio behavior)
+   Applied to: Group, Row, Stack, Grid, Column, Columns, Heading, Paragraph, Image, Cover
    ======================================== */
 
 /* Fade In */
@@ -70,6 +71,7 @@
    2️⃣ ANIMATION DELAY
    Category: Exclusive (radio behavior)
    Note: Only works with Animation category
+   Applied to: All blocks with animations
    ======================================== */
 
 .bsm-delay-fast {
@@ -87,11 +89,38 @@
 /* ========================================
    3️⃣ HOVER EFFECTS (Transform-based)
    Category: Exclusive (radio behavior)
-   Applied to: Group, Column, Image, Cover, Media & Text
+   Applied to: Group, Column, Columns, Image, Cover, Media & Text
    ======================================== */
 
+/* Zoom In on Hover */
+.bsm-zoom-hover {
+    transition: transform 0.3s ease-out;
+    overflow: hidden;
+}
+
+.bsm-zoom-hover:hover {
+    transform: scale(1.05);
+}
+
+/* Subtle Rotate on Hover */
+.bsm-rotate-hover {
+    transition: transform 0.3s ease-out;
+}
+
+.bsm-rotate-hover:hover {
+    transform: rotate(2deg);
+}
+
 /* Very Subtle Bounce on Hover */
-@keyframes bsm-bounce-hover {
+.bsm-bounce-hover {
+    transition: transform 0.3s ease-out;
+}
+
+.bsm-bounce-hover:hover {
+    animation: bsm-bounceEffect 0.6s ease-in-out;
+}
+
+@keyframes bsm-bounceEffect {
     0%, 100% {
         transform: translateY(0);
     }
@@ -100,13 +129,53 @@
     }
 }
 
+/* Grayscale on Hover (Image/Cover only) */
+.bsm-grayscale-hover img,
+.bsm-grayscale-hover .wp-block-cover__image-background {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease-out;
+}
+
+.bsm-grayscale-hover:hover img,
+.bsm-grayscale-hover:hover .wp-block-cover__image-background {
+    filter: grayscale(0%);
+}
+
 /* ========================================
    4️⃣ TEXT EFFECTS (Micro-interactions)
    Category: Exclusive (radio behavior)
    Applied to: Paragraph, Heading
    ======================================== */
 
+/* Underline Reveal on Hover */
+.bsm-underline-reveal {
+    position: relative;
+    display: inline-block;
+}
 
+.bsm-underline-reveal::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 0.3s ease-out;
+}
+
+.bsm-underline-reveal:hover::after {
+    width: 100%;
+}
+
+/* Soft Text Fade on Hover */
+.bsm-text-fade-hover {
+    transition: opacity 0.3s ease-out;
+}
+
+.bsm-text-fade-hover:hover {
+    opacity: 0.7;
+}
 
 /* ========================================
    ACCESSIBILITY & PERFORMANCE
@@ -133,9 +202,23 @@
 
     .bsm-zoom-hover:hover,
     .bsm-rotate-hover:hover,
-    .bsm-grayscale-hover:hover img {
+    .bsm-bounce-hover:hover {
         transform: none !important;
+    }
+
+    .bsm-grayscale-hover img,
+    .bsm-grayscale-hover:hover img,
+    .bsm-grayscale-hover .wp-block-cover__image-background,
+    .bsm-grayscale-hover:hover .wp-block-cover__image-background {
         filter: none !important;
+    }
+
+    .bsm-underline-reveal::after {
+        display: none !important;
+    }
+
+    .bsm-text-fade-hover:hover {
+        opacity: 1 !important;
     }
 }
 
@@ -149,7 +232,8 @@
     will-change: transform;
 }
 
-.bsm-grayscale-hover img {
+.bsm-grayscale-hover img,
+.bsm-grayscale-hover .wp-block-cover__image-background {
     will-change: filter;
 }
 

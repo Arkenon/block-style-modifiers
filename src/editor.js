@@ -11,9 +11,36 @@ import {__} from '@wordpress/i18n';
 import {addFilter} from '@wordpress/hooks';
 import {createHigherOrderComponent} from '@wordpress/compose';
 import {InspectorControls} from '@wordpress/block-editor';
-import {PanelBody, CheckboxControl, Button} from '@wordpress/components';
+import {PanelBody, RadioControl, CheckboxControl, Button} from '@wordpress/components';
 import {Fragment, useState} from '@wordpress/element';
 import '@bsm/editor.scss';
+
+/**
+ * Normalize category to structured object format
+ * @param {Object} category - Category object with slug, label, description, exclusive
+ * @returns {Object} Normalized category object
+ * @since 1.0.0
+ */
+const normalizeCategoryObject = (category) => {
+    // Category must be an object
+    if (typeof category !== 'object' || category === null) {
+        console.error('Block Style Modifiers: Category must be an object with slug, label, description, and exclusive properties.');
+        return {
+            slug: 'uncategorized',
+            label: __('Uncategorized', 'block-style-modifiers'),
+            description: '',
+            exclusive: false,
+        };
+    }
+
+    // Return normalized object with defaults
+    return {
+        slug: category.slug || 'uncategorized',
+        label: category.label || category.slug || 'Uncategorized',
+        description: category.description || '',
+        exclusive: category.exclusive === true,
+    };
+};
 
 /**
  * Get modifiers for a specific block with metadata
@@ -40,7 +67,7 @@ const getModifiersForBlock = (blockName) => {
             class: mod.class,
             label: mod.label || mod.name,
             description: mod.description || '',
-            category: mod.category || 'Uncategorized',
+            category: normalizeCategoryObject(mod.category),
             name: mod.name,
         }));
 
@@ -58,7 +85,7 @@ const getModifiersForBlock = (blockName) => {
             class: mod.class,
             label: mod.label || mod.name,
             description: mod.description || '',
-            category: mod.category || 'Uncategorized',
+            category: normalizeCategoryObject(mod.category),
             name: mod.name,
         }));
     }
@@ -66,17 +93,22 @@ const getModifiersForBlock = (blockName) => {
 
 /**
  * Group modifiers by category
- * @param {Array} modifiers Array of modifiers
- * @returns {Object} Modifiers grouped by category
+ * @param {Array} modifiers Array of modifiers with normalized category objects
+ * @returns {Object} Modifiers grouped by category slug with metadata
  * @since 1.0.0
  */
 const groupModifiersByCategory = (modifiers) => {
     return modifiers.reduce((acc, mod) => {
-        const cat = mod.category || 'Uncategorized';
-        if (!acc[cat]) {
-            acc[cat] = [];
+        const categoryObj = mod.category;
+        const slug = categoryObj.slug;
+
+        if (!acc[slug]) {
+            acc[slug] = {
+                meta: categoryObj,
+                modifiers: []
+            };
         }
-        acc[cat].push(mod);
+        acc[slug].modifiers.push(mod);
         return acc;
     }, {});
 };
@@ -115,17 +147,42 @@ const withStyleModifiers = createHigherOrderComponent(
         
         const [draggedIndex, setDraggedIndex] = useState(null);
 
-        // Toggle modifier selection
-        const toggleModifier = (modifierClass) => {
-            const isSelected = selectedClasses.includes(modifierClass);
-            if (isSelected) {
-                setAttributes({
-                    styleModifiers: selectedClasses.filter(c => c !== modifierClass)
-                });
+        // Toggle modifier selection (category-aware)
+        const toggleModifier = (modifierClass, categorySlug) => {
+            const categoryGroup = groupedModifiers[categorySlug];
+            if (!categoryGroup) return;
+
+            // Check if category is exclusive
+            const isExclusive = categoryGroup.meta.exclusive;
+
+            if (isExclusive) {
+                // Remove all modifiers from the same category
+                const modifiersInCategory = categoryGroup.modifiers.map(m => m.class);
+                const filteredClasses = selectedClasses.filter(c => !modifiersInCategory.includes(c));
+
+                // If the clicked modifier is already selected, just remove it (deselect)
+                if (selectedClasses.includes(modifierClass)) {
+                    setAttributes({
+                        styleModifiers: filteredClasses
+                    });
+                } else {
+                    // Add the new modifier
+                    setAttributes({
+                        styleModifiers: [...filteredClasses, modifierClass]
+                    });
+                }
             } else {
-                setAttributes({
-                    styleModifiers: [...selectedClasses, modifierClass]
-                });
+                // Non-exclusive: toggle like checkbox
+                const isSelected = selectedClasses.includes(modifierClass);
+                if (isSelected) {
+                    setAttributes({
+                        styleModifiers: selectedClasses.filter(c => c !== modifierClass)
+                    });
+                } else {
+                    setAttributes({
+                        styleModifiers: [...selectedClasses, modifierClass]
+                    });
+                }
             }
         };
 
@@ -195,7 +252,7 @@ const withStyleModifiers = createHigherOrderComponent(
                                                 isSmall
                                                 variant="tertiary"
                                                 icon="no-alt"
-                                                onClick={() => toggleModifier(mod.class)}
+                                                onClick={() => toggleModifier(mod.class, mod.category.slug)}
                                                 label={__('Remove', 'block-style-modifiers')}
                                             />
                                         </li>
@@ -215,24 +272,83 @@ const withStyleModifiers = createHigherOrderComponent(
                             <strong className="block-style-modifiers__available-title">
                                 {__('Available Modifiers', 'block-style-modifiers')}
                             </strong>
-                            {Object.keys(groupedModifiers).map(category => (
-                                <PanelBody
-                                    key={category}
-                                    title={category}
-                                    initialOpen={false}
-                                >
-                                    {groupedModifiers[category].map(modifier => (
-                                        <CheckboxControl
-                                            key={modifier.class}
-                                            label={modifier.label}
-                                            title={modifier.description}
-                                            checked={selectedClasses.includes(modifier.class)}
-                                            onChange={() => toggleModifier(modifier.class)}
-                                            __nextHasNoMarginBottom={true}
-                                        />
-                                    ))}
-                                </PanelBody>
-                            ))}
+                            {Object.keys(groupedModifiers).map(categorySlug => {
+                                const categoryGroup = groupedModifiers[categorySlug];
+                                const categoryMeta = categoryGroup.meta;
+                                const categoryModifiers = categoryGroup.modifiers;
+                                const isExclusive = categoryMeta.exclusive;
+
+                                if (isExclusive) {
+                                    // Exclusive category: use RadioControl
+                                    const selectedInCategory = categoryModifiers.find(mod =>
+                                        selectedClasses.includes(mod.class)
+                                    );
+                                    const selectedValue = selectedInCategory ? selectedInCategory.class : '';
+
+                                    const options = [
+                                        { label: __('None', 'block-style-modifiers'), value: '' },
+                                        ...categoryModifiers.map(mod => ({
+                                            label: mod.label,
+                                            value: mod.class,
+                                        }))
+                                    ];
+
+                                    return (
+                                        <PanelBody
+                                            key={categorySlug}
+                                            title={categoryMeta.label}
+                                            initialOpen={false}
+                                        >
+                                            {categoryMeta.description && (
+                                                <p className="block-style-modifiers__category-description">
+                                                    {categoryMeta.description}
+                                                </p>
+                                            )}
+                                            <RadioControl
+                                                selected={selectedValue}
+                                                options={options}
+                                                onChange={(value) => {
+                                                    if (value === '') {
+                                                        // Remove all from this category
+                                                        const modifiersInCategory = categoryModifiers.map(m => m.class);
+                                                        setAttributes({
+                                                            styleModifiers: selectedClasses.filter(c => !modifiersInCategory.includes(c))
+                                                        });
+                                                    } else {
+                                                        // Select new modifier
+                                                        toggleModifier(value, categorySlug);
+                                                    }
+                                                }}
+                                            />
+                                        </PanelBody>
+                                    );
+                                } else {
+                                    // Non-exclusive category: use CheckboxControl
+                                    return (
+                                        <PanelBody
+                                            key={categorySlug}
+                                            title={categoryMeta.label}
+                                            initialOpen={false}
+                                        >
+                                            {categoryMeta.description && (
+                                                <p className="block-style-modifiers__category-description">
+                                                    {categoryMeta.description}
+                                                </p>
+                                            )}
+                                            {categoryModifiers.map(modifier => (
+                                                <CheckboxControl
+                                                    key={modifier.class}
+                                                    label={modifier.label}
+                                                    help={modifier.description}
+                                                    checked={selectedClasses.includes(modifier.class)}
+                                                    onChange={() => toggleModifier(modifier.class, categorySlug)}
+                                                    __nextHasNoMarginBottom={true}
+                                                />
+                                            ))}
+                                        </PanelBody>
+                                    );
+                                }
+                            })}
                         </div>
                     </PanelBody>
                 </InspectorControls>

@@ -1,0 +1,155 @@
+/**
+ * Block Style Modifier Pack - Default Styles
+ * Theme-independent, universal style modifiers for WordPress blocks
+ *
+ * Philosophy:
+ * - Enhance behavior, not visual design
+ * - No borders, shadows, spacing, or color palettes
+ * - Work with any theme without conflicts
+ * - Atomic and performant
+ *
+ * @package Block_Style_Modifier
+ * @version 1.0.0
+ */
+
+/* ========================================
+   1️⃣ ANIMATIONS (Entrance)
+   Category: Exclusive (radio behavior)
+   ======================================== */
+
+/* Fade In */
+@keyframes bsm-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.bsm-fade-in {
+    opacity: 0;
+    animation: bsm-fadeIn 0.6s ease-out forwards;
+}
+
+/* Slide Up */
+@keyframes bsm-slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.bsm-slide-up {
+    opacity: 0;
+    animation: bsm-slideUp 0.6s ease-out forwards;
+}
+
+/* Scale In */
+@keyframes bsm-scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.bsm-scale-in {
+    opacity: 0;
+    animation: bsm-scaleIn 0.5s ease-out forwards;
+}
+
+/* ========================================
+   2️⃣ ANIMATION DELAY
+   Category: Exclusive (radio behavior)
+   Note: Only works with Animation category
+   ======================================== */
+
+.bsm-delay-fast {
+    animation-delay: 0.2s !important;
+}
+
+.bsm-delay-normal {
+    animation-delay: 0.4s !important;
+}
+
+.bsm-delay-slow {
+    animation-delay: 0.8s !important;
+}
+
+/* ========================================
+   3️⃣ HOVER EFFECTS (Transform-based)
+   Category: Exclusive (radio behavior)
+   Applied to: Group, Column, Image, Cover, Media & Text
+   ======================================== */
+
+/* Very Subtle Bounce on Hover */
+@keyframes bsm-bounce-hover {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* ========================================
+   4️⃣ TEXT EFFECTS (Micro-interactions)
+   Category: Exclusive (radio behavior)
+   Applied to: Paragraph, Heading
+   ======================================== */
+
+
+
+/* ========================================
+   ACCESSIBILITY & PERFORMANCE
+   ======================================== */
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .bsm-fade-in,
+    .bsm-slide-up,
+    .bsm-scale-in {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+
+    .bsm-zoom-hover,
+    .bsm-rotate-hover,
+    .bsm-bounce-hover,
+    .bsm-grayscale-hover,
+    .bsm-underline-reveal,
+    .bsm-text-fade-hover {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .bsm-zoom-hover:hover,
+    .bsm-rotate-hover:hover,
+    .bsm-grayscale-hover:hover img {
+        transform: none !important;
+        filter: none !important;
+    }
+}
+
+/* GPU acceleration for transforms */
+.bsm-zoom-hover,
+.bsm-rotate-hover,
+.bsm-bounce-hover,
+.bsm-fade-in,
+.bsm-slide-up,
+.bsm-scale-in {
+    will-change: transform;
+}
+
+.bsm-grayscale-hover img {
+    will-change: filter;
+}
+

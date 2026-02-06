@@ -4,7 +4,7 @@ Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.4
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,14 +17,45 @@ Style Modifiers are additive CSS classes that:
 
 * Can be applied in addition to a Block Style
 * Can be selected multiple at the same time
+* Support both checkbox (non-exclusive) and radio (exclusive) behavior per category
 * Are predefined and documented by themes or plugins
 * Preserve class order, allowing advanced CSS control
+
+= Category Behavior =
+
+Style modifiers are organized into categories with two behaviors:
+
+* **Non-exclusive categories** (checkbox): Multiple modifiers can be selected simultaneously (default: `exclusive: false`)
+* **Exclusive categories** (radio): Only one modifier from the category can be selected at a time (`exclusive: true`)
+
+= Structured Category Object =
+
+Categories must be defined as objects with:
+
+* `slug` - Language-independent identifier for grouping (required)
+* `label` - Translatable UI label (required)
+* `description` - Optional category description
+* `exclusive` - Boolean flag for radio behavior (default: false)
+
 
 == Features ==
 * Register multiple style modifiers for any block type
 * Apply multiple style modifiers to a single block
 * Global style modifiers that apply to all blocks
 * Inline CSS support for easy styling of modifiers
+* Structured category objects with exclusive/non-exclusive behavior
+* Theme-independent default modifiers via Block Style Modifier Pack
+
+= Default Modifiers =
+Plugin provides a set of default style modifiers that can be used with any theme:
+* **Animations** - Fade In, Slide Up, Scale In
+* **Animation Delay** - Fast, Normal, Slow
+* **Hover Effects** - Zoom, Rotate, Bounce, Grayscale
+* **Text Effects** - Underline Reveal, Text Fade
+
+All default modifiers are theme-independent and performance-optimized.
+
+You can easily extend or override these defaults by registering your own style modifiers in your theme or custom plugin.
 
 == Usage ==
 * Define your style modifiers using the `block_style_modifiers_register_style` function via your theme's `functions.php` file or a custom plugin.
@@ -36,13 +67,46 @@ Style Modifiers are additive CSS classes that:
 
 == Registering a Block Style Modifier ==
 
-`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], ['name' => 'zoom-on-hover', 'label' => __( 'Zoom on Hover', 'block-style-modifier-pack' ), 'class'=> 'bsmp-zoom-on-hover', 'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ), 'category' => __( 'Hover Effects', 'block-style-modifier-pack' ),] );`
+You can easily register your own style modifiers in your theme or custom plugin.
+
+Here are some examples of how to register style modifiers with different category behaviors:
+
+= Exclusive Category (Radio Behavior) =
+
+`block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+    'name'        => 'zoom-on-hover',
+    'label'       => __( 'Zoom on Hover', 'my-theme' ),
+    'class'       => 'bsm-zoom-on-hover',
+    'description' => __( 'Zoom into image on hover', 'my-theme' ),
+    'category'    => [
+        'slug'        => 'hover-effects',
+        'label'       => __( 'Hover Effects', 'my-theme' ),
+        'description' => __( 'Transform-based hover interactions', 'my-theme' ),
+        'exclusive'   => true,
+    ],
+] );`
+
+= Non-Exclusive Category (Checkbox Behavior) =
+
+`block_style_modifiers_register_style( '*', [
+    'name'     => 'hide-sm',
+    'label'    => __( 'Hide on Small Screens', 'my-theme' ),
+    'class'    => 'bsm-hide-sm',
+    'category' => [
+        'slug'        => 'responsive',
+        'label'       => __( 'Responsive', 'my-theme' ),
+        'description' => __( 'Responsive visibility controls', 'my-theme' ),
+        'exclusive'   => false,
+    ],
+] );`
+
+That's it! You can now select multiple style modifiers for your blocks in the Block Editor.
 
 == Example Result in Markup ==
 
-`class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm"`
+`class="wp-block-cover has-custom-content-position is-position-bottom-left bsm-zoom-hover bsm-fade-in bsm-delay-normal"`
 
-It is important to note that the order of classes may affect CSS specificity and styling. You can easily order your CSS rules with drag/drop functionality in the Block Editor.
+It is important to note that the order of classes may affect CSS specificity and styling. You can easily reorder your modifiers with drag/drop functionality in the Block Editor.
 
 == Source Code ==
 It is available on GitHub:
@@ -56,6 +120,22 @@ It is available on GitHub:
 3. Add your custom style modifiers using the `register_block_style_modifier` function in your theme's `functions.php` file or a custom plugin.
 
 == Changelog ==
+= 1.0.6 =
+* Added: Structured category object support (slug, label, description, exclusive)
+* Added: Exclusive category behavior (radio selection within categories)
+* Added: Non-exclusive category behavior (checkbox selection - default)
+* Breaking: Category must now be a structured object (string format no longer supported)
+* Updated: Documentation with structured category examples
+* Added: Default modifiers
+
+= 1.0.5 =
+* Added: Structured category object support (slug, label, description, exclusive)
+* Added: Exclusive category behavior (radio selection within categories)
+* Added: Non-exclusive category behavior (checkbox selection - default)
+* Breaking: Category must now be a structured object (string format no longer supported)
+* Updated: Documentation with structured category examples
+* Updated: Block Style Modifier Pack with theme-independent default modifiers
+* Improved: Category-based grouping and selection UI
 
 = 1.0.4 =
 Updated: readme.txt

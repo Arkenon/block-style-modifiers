@@ -29,43 +29,63 @@ Result:
 Style Modifiers are additive CSS classes that:
 
  - Can be applied in addition to a Block Style
- - Can be selected multiple at the same time
+ - Can be selected multiple at the same time (or exclusively within a category)
  - Are predefined and documented by themes or plugins
  - Preserve class order, allowing advanced CSS control
- - They behave like checkboxes, not radio buttons.
+ - Support both checkbox (non-exclusive) and radio (exclusive) behavior per category
 
-**Note:** There is available an experimental plugin includes blocks style modifiers:  [Block Style Modifier Pack](https://github.com/Arkenon/block-style-modifier-pack) plugin to function.
+**Category Behavior**
 
-Registering a block style modifier:
+Style modifiers are organized into categories with two behaviors:
+
+- **Non-exclusive categories** (checkbox behavior): Multiple modifiers can be selected simultaneously (default: `exclusive: false`)
+- **Exclusive categories** (radio behavior): Only one modifier can be selected at a time within the category (`exclusive: true`)
+
+Registering block style modifiers:
+
 ```php
-// Example: Register a style modifier for multiple blocks
- block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+// Example 1: Exclusive category (radio behavior)
+block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
     'name'        => 'zoom-on-hover',
     'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
-    'class'       => 'bsmp-zoom-on-hover',
+    'class'       => 'bsm-zoom-on-hover',
     'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ),
-    'category'    => __( 'Hover Effects', 'block-style-modifier-pack' ),
- ] );
-
-// Register a style modifier for a single block
-block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
-    'name'        => 'hover-overlay-dark',
-    'label'       => __( 'Dark Overlay on Hover', 'block-style-modifier-pack' ),
-    'class'       => 'bsmp-hover-overlay-dark',
-    'description' => __( 'Dark semi-transparent overlay appears on hover', 'block-style-modifier-pack' ),
-    'category'    => __( 'Overlay Effects', 'block-style-modifier-pack' ),
+    'category'    => [
+        'slug'        => 'hover-effects',
+        'label'       => __( 'Hover Effects', 'block-style-modifier-pack' ),
+        'description' => __( 'Transform-based hover interactions', 'block-style-modifier-pack' ),
+        'exclusive'   => true,  // Only one hover effect can be selected at a time
+    ],
 ] );
 
-// Example: Global modifier for all blocks with inline style
+// Example 2: Another modifier in the same exclusive category
+block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
+    'name'        => 'grayscale-hover',
+    'label'       => __( 'Grayscale on Hover', 'block-style-modifier-pack' ),
+    'class'       => 'bsm-grayscale-hover',
+    'description' => __( 'Image appears grayscale and reveals color on hover', 'block-style-modifier-pack' ),
+    'category'    => [
+        'slug'        => 'hover-effects',
+        'label'       => __( 'Hover Effects', 'block-style-modifier-pack' ),
+        'exclusive'   => true,
+    ],
+] );
+
+// Example 3: Non-exclusive category (checkbox behavior)
 block_style_modifiers_register_style( '*', [
     'name'         => 'hide-sm',
-    'label'        => 'Hide on Small Screens',
-    'class'        => 'bsmp-hide-sm',
-    'description'  => __( 'Hide block on small (max-width: 600px) screens'),
-    'category'     => __( 'Responsive'),
+    'label'        => __( 'Hide on Small Screens', 'block-style-modifier-pack' ),
+    'class'        => 'bsm-hide-sm',
+    'description'  => __( 'Hide block on small (max-width: 600px) screens', 'block-style-modifier-pack' ),
+    'category'     => [
+        'slug'        => 'responsive',
+        'label'       => __( 'Responsive', 'block-style-modifier-pack' ),
+        'description' => __( 'Responsive visibility controls', 'block-style-modifier-pack' ),
+        'exclusive'   => false,  // Multiple modifiers can be selected
+    ],
     'inline_style' => '
         @media (max-width: 600px) {
-        .bsmp-hide-sm {
+            .bsm-hide-sm {
                 display: none !important;
             }
         }
@@ -76,9 +96,30 @@ block_style_modifiers_register_style( '*', [
 Example result in markup:
 
 ```html
-    <div class="wp-block-cover has-custom-content-position is-position-bottom-left bsmp-zoom-on-hover bsmp-hover-overlay-dark bsmp-hide-sm">
-        ...
- ```
+<div class="wp-block-cover has-custom-content-position is-position-bottom-left bsm-zoom-hover bsm-fade-in bsm-delay-normal">
+    ...
+</div>
+```
+
+**Category Object Structure**
+
+Categories must be defined as structured objects with the following properties:
+
+- **slug** (string, required): Language-independent identifier used for grouping
+- **label** (string, required): Translatable label shown in the UI
+- **description** (string, optional): Descriptive text shown under the category title
+- **exclusive** (boolean, optional): If `true`, only one modifier from this category can be selected at a time (radio behavior). Default: `false` (checkbox behavior)
+
+Example:
+
+```php
+'category' => [
+    'slug'        => 'hover-effects',
+    'label'       => __( 'Hover Effects', 'my-theme' ),
+    'description' => __( 'Transform-based hover interactions', 'my-theme' ),
+    'exclusive'   => true,
+]
+```
 
 Modifiers are:
 - Predefined
@@ -87,6 +128,37 @@ Modifiers are:
 - Block-specific if desired
 
 This makes them safer than free-text CSS classes, not riskier.
+
+**Default Modifiers**
+
+The [Block Style Modifier Pack](https://github.com/Arkenon/block-style-modifier-pack) plugin provides theme-independent, universal style modifiers that work with any WordPress theme:
+
+**Animations** (Exclusive Category)
+- Fade In - Smooth entrance animation
+- Slide Up - Slide from bottom
+- Scale In - Scale up animation
+
+**Animation Delay** (Exclusive Category)
+- Fast (0.2s)
+- Normal (0.4s)
+- Slow (0.8s)
+
+**Hover Effects** (Exclusive Category)
+- Zoom In on Hover
+- Subtle Rotate on Hover
+- Bounce on Hover
+- Grayscale on Hover (Image/Cover blocks only)
+
+**Text Effects** (Exclusive Category)
+- Underline Reveal on Hover
+- Soft Text Fade on Hover
+
+All default modifiers:
+- Are theme-independent (no borders, shadows, spacing, or colors)
+- Use transform, filter, and opacity for visual effects
+- Support accessibility (prefers-reduced-motion)
+- Are performance-optimized (GPU acceleration)
+- Use the `bsm-` prefix for all CSS classes
 
 **Design Principles**
 

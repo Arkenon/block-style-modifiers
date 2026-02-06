@@ -32,18 +32,11 @@ function block_style_modifiers_register_defaults() {
         'core/stack',
         'core/grid',
         'core/column',
-        'core/columns',
-        'core/heading',
-        'core/paragraph',
-        'core/image',
-        'core/cover',
+        'core/columns'
     ];
 
     // Hover effect blocks
     $hover_blocks = [
-        'core/group',
-        'core/column',
-        'core/columns',
         'core/image',
         'core/cover',
         'core/media-text',
@@ -100,6 +93,76 @@ function block_style_modifiers_register_defaults() {
         'label'       => __( 'Scale In', 'block-style-modifiers' ),
         'class'       => 'bsm-scale-in',
         'description' => __( 'Scale up animation with fade effect', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'animations',
+            'label'       => __( 'Animations', 'block-style-modifiers' ),
+            'description' => __( 'Entrance animations for blocks', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Slide Down
+    block_style_modifiers_register_style( $animation_blocks, [
+        'name'        => 'slide-down',
+        'label'       => __( 'Slide Down', 'block-style-modifiers' ),
+        'class'       => 'bsm-slide-down',
+        'description' => __( 'Slide from top with fade effect', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'animations',
+            'label'       => __( 'Animations', 'block-style-modifiers' ),
+            'description' => __( 'Entrance animations for blocks', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Slide Left
+    block_style_modifiers_register_style( $animation_blocks, [
+        'name'        => 'slide-left',
+        'label'       => __( 'Slide Left', 'block-style-modifiers' ),
+        'class'       => 'bsm-slide-left',
+        'description' => __( 'Slide from right with fade effect', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'animations',
+            'label'       => __( 'Animations', 'block-style-modifiers' ),
+            'description' => __( 'Entrance animations for blocks', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Slide Right
+    block_style_modifiers_register_style( $animation_blocks, [
+        'name'        => 'slide-right',
+        'label'       => __( 'Slide Right', 'block-style-modifiers' ),
+        'class'       => 'bsm-slide-right',
+        'description' => __( 'Slide from left with fade effect', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'animations',
+            'label'       => __( 'Animations', 'block-style-modifiers' ),
+            'description' => __( 'Entrance animations for blocks', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Rotate In
+    block_style_modifiers_register_style( $animation_blocks, [
+        'name'        => 'rotate-in',
+        'label'       => __( 'Rotate In', 'block-style-modifiers' ),
+        'class'       => 'bsm-rotate-in',
+        'description' => __( 'Rotate animation with fade effect', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'animations',
+            'label'       => __( 'Animations', 'block-style-modifiers' ),
+            'description' => __( 'Entrance animations for blocks', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Flip In X
+    block_style_modifiers_register_style( $animation_blocks, [
+        'name'        => 'flip-in-x',
+        'label'       => __( 'Flip In X', 'block-style-modifiers' ),
+        'class'       => 'bsm-flip-in-x',
+        'description' => __( 'Flip animation along X-axis with fade effect', 'block-style-modifiers' ),
         'category'    => [
             'slug'        => 'animations',
             'label'       => __( 'Animations', 'block-style-modifiers' ),
@@ -203,12 +266,12 @@ function block_style_modifiers_register_defaults() {
         ],
     ] );
 
-    // Grayscale on Hover (Image/Cover only)
+    // Grayscale to Color on Hover (Image/Cover only)
     block_style_modifiers_register_style( $image_blocks, [
-        'name'        => 'grayscale-hover',
-        'label'       => __( 'Grayscale on Hover', 'block-style-modifiers' ),
-        'class'       => 'bsm-grayscale-hover',
-        'description' => __( 'Image appears grayscale and reveals color on hover', 'block-style-modifiers' ),
+        'name'        => 'grayscale-to-color-hover',
+        'label'       => __( 'Grayscale to Color on Hover', 'block-style-modifiers' ),
+        'class'       => 'bsm-grayscale-to-color-hover',
+        'description' => __( 'Image starts grayscale and reveals color on hover', 'block-style-modifiers' ),
         'category'    => [
             'slug'        => 'hover-effects',
             'label'       => __( 'Hover Effects', 'block-style-modifiers' ),
@@ -216,6 +279,63 @@ function block_style_modifiers_register_defaults() {
             'exclusive'   => true,
         ],
     ] );
+
+    // Shake on Hover
+    block_style_modifiers_register_style( $hover_blocks, [
+        'name'        => 'shake-hover',
+        'label'       => __( 'Shake on Hover', 'block-style-modifiers' ),
+        'class'       => 'bsm-shake-hover',
+        'description' => __( 'Subtle shake/vibrate effect on hover', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'hover-effects',
+            'label'       => __( 'Hover Effects', 'block-style-modifiers' ),
+            'description' => __( 'Transform-based hover interactions', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Brightness on Hover
+    block_style_modifiers_register_style( $hover_blocks, [
+        'name'        => 'brightness-hover',
+        'label'       => __( 'Brighten on Hover', 'block-style-modifiers' ),
+        'class'       => 'bsm-brightness-hover',
+        'description' => __( 'Increase brightness on hover', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'hover-effects',
+            'label'       => __( 'Hover Effects', 'block-style-modifiers' ),
+            'description' => __( 'Transform-based hover interactions', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Darken on Hover
+    block_style_modifiers_register_style( $hover_blocks, [
+        'name'        => 'darken-hover',
+        'label'       => __( 'Darken on Hover', 'block-style-modifiers' ),
+        'class'       => 'bsm-darken-hover',
+        'description' => __( 'Decrease brightness on hover', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'hover-effects',
+            'label'       => __( 'Hover Effects', 'block-style-modifiers' ),
+            'description' => __( 'Transform-based hover interactions', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
+    // Blur to Focus on Hover (Image/Cover only)
+    block_style_modifiers_register_style( $image_blocks, [
+        'name'        => 'blur-to-focus-hover',
+        'label'       => __( 'Blur to Focus on Hover', 'block-style-modifiers' ),
+        'class'       => 'bsm-blur-to-focus-hover',
+        'description' => __( 'Image starts blurred and becomes sharp on hover', 'block-style-modifiers' ),
+        'category'    => [
+            'slug'        => 'hover-effects',
+            'label'       => __( 'Hover Effects', 'block-style-modifiers' ),
+            'description' => __( 'Transform-based hover interactions', 'block-style-modifiers' ),
+            'exclusive'   => true,
+        ],
+    ] );
+
 
     /* ========================================
        4️⃣ TEXT EFFECTS (Micro-interactions)
@@ -250,7 +370,3 @@ function block_style_modifiers_register_defaults() {
         ],
     ] );
 }
-
-// Register defaults on plugins_loaded with priority 10
-add_action( 'plugins_loaded', 'block_style_modifiers_register_defaults', 10 );
-

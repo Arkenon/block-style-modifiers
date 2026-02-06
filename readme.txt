@@ -4,7 +4,7 @@ Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,11 +58,16 @@ Block Style Modifiers includes theme-independent default modifiers that work wit
 
 **Available Categories:**
 
-**Animations (Exclusive)** - Entrance animations for blocks
+**Animations (Exclusive)** - Entrance animations for wrapper blocks
 * Fade In - Smooth fade entrance
 * Slide Up - Slide from bottom
+* Slide Down - Slide from top
+* Slide Left - Slide from right
+* Slide Right - Slide from left
 * Scale In - Scale up animation
-Blocks: Group, Row, Stack, Grid, Column, Columns, Heading, Paragraph, Image, Cover
+* Rotate In - Rotate with fade
+* Flip In X - 3D flip animation
+Applied to: Group, Row, Stack, Grid, Column, Columns (wrapper blocks only)
 
 **Animation Delay (Exclusive)** - Control animation timing
 * Fast (0.2s)
@@ -73,15 +78,21 @@ Blocks: Group, Row, Stack, Grid, Column, Columns, Heading, Paragraph, Image, Cov
 * Zoom In on Hover
 * Subtle Rotate on Hover
 * Bounce on Hover
-* Grayscale on Hover (Image/Cover only)
-Blocks: Group, Column, Columns, Image, Cover, Media & Text
+* Shake on Hover
+* Brighten on Hover
+* Darken on Hover
+* Grayscale to Color on Hover (Image/Cover only)
+* Blur to Focus on Hover (Image/Cover only)
+Applied to: Image, Cover, Media & Text (content blocks only)
 
 **Text Effects (Exclusive)** - Micro-interactions for text
 * Underline Reveal on Hover
 * Soft Text Fade on Hover
-Blocks: Paragraph, Heading
+Applied to: Paragraph, Heading (text blocks only)
 
 All default modifiers respect accessibility preferences and are disabled when prefers-reduced-motion is set.
+
+**Architecture Note:** Animations are only available for wrapper blocks (Group, Row, Stack, etc.) while Hover Effects are for content blocks (Image, Cover, Media & Text). This separation prevents CSS property conflicts and ensures all modifiers work seamlessly together.
 
 You can easily extend or override these defaults by registering your own style modifiers in your theme or custom plugin.
 
@@ -148,6 +159,17 @@ It is available on GitHub:
 3. Add your custom style modifiers using the `register_block_style_modifier` function in your theme's `functions.php` file or a custom plugin.
 
 == Changelog ==
+= 1.0.7 =
+* Added: 5 new animation types (Slide Down, Slide Left, Slide Right, Rotate In, Flip In X)
+* Added: 4 new hover effects (Shake, Brighten, Darken, Blur to Focus)
+* Improved: Architecture - Animations now only apply to wrapper blocks (Group, Row, Stack, etc.)
+* Improved: Architecture - Hover effects now only apply to content blocks (Image, Cover, Media & Text)
+* Fixed: CSS property conflicts between animations and hover effects
+* Fixed: Grayscale effect renamed to "Grayscale to Color on Hover" for clarity
+* Removed: Overlay hover effect (redundant with Darken effect)
+* Performance: Optimized will-change properties for better GPU acceleration
+* Accessibility: All new effects respect prefers-reduced-motion
+
 = 1.0.6 =
 * Added: Structured category object support (slug, label, description, exclusive)
 * Added: Exclusive category behavior (radio selection within categories)

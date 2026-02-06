@@ -141,10 +141,15 @@ Block Style Modifiers comes with **theme-independent default modifiers** that wo
 - ✅ Respect `prefers-reduced-motion`
 
 **1️⃣ Animations** (Exclusive Category)
-Blocks: Group, Row, Stack, Grid, Column, Columns, Heading, Paragraph, Image, Cover
+Applied to: **Group, Row, Stack, Grid, Column, Columns** (wrapper blocks only)
 - **Fade In** - Smooth entrance animation with fade effect
 - **Slide Up** - Slide from bottom with fade effect
 - **Scale In** - Scale up animation with fade effect
+- **Slide Down** - Slide from top with fade effect
+- **Slide Left** - Slide from right with fade effect
+- **Slide Right** - Slide from left with fade effect
+- **Rotate In** - Rotate animation with fade effect
+- **Flip In X** - Flip animation along X-axis with fade effect
 
 **2️⃣ Animation Delay** (Exclusive Category)
 Works with Animation category
@@ -153,44 +158,28 @@ Works with Animation category
 - **Slow (0.8s)** - Delayed animation start
 
 **3️⃣ Hover Effects** (Exclusive Category)
-Blocks: Group, Column, Columns, Image, Cover, Media & Text
+Applied to: **Image, Cover, Media & Text** (content blocks only)
 - **Zoom In on Hover** - Block scales up on hover
 - **Subtle Rotate on Hover** - Block rotates slightly on hover
 - **Bounce on Hover** - Very subtle bounce animation on hover
-- **Grayscale on Hover** - Image appears grayscale and reveals color on hover (Image/Cover only)
+- **Shake on Hover** - Subtle shake/vibrate effect on hover
+- **Brighten on Hover** - Increase brightness on hover
+- **Darken on Hover** - Decrease brightness on hover
+- **Grayscale to Color on Hover** - Image starts grayscale and reveals color on hover (Image/Cover only)
+- **Blur to Focus on Hover** - Image starts blurred and becomes sharp on hover (Image/Cover only)
 
 **4️⃣ Text Effects** (Exclusive Category)
-Blocks: Paragraph, Heading
+Applied to: **Paragraph, Heading** (text blocks only)
 - **Underline Reveal on Hover** - Animated underline appears on hover
 - **Soft Text Fade on Hover** - Text softly fades on hover
 
 All default modifiers respect user preferences and animations are disabled when `prefers-reduced-motion` is set.
 
+**Architecture Note:** Animations are only available for wrapper blocks (Group, Row, Stack, etc.) while Hover Effects are for content blocks (Image, Cover, Media & Text). This separation prevents CSS property conflicts and ensures all modifiers work seamlessly together.
+
 ---
 
-**Creating Custom Modifiers**All default modifiers respect user preferences and animations are disabled when `prefers-reduced-motion` is set.
-- Fast (0.2s)
-- Normal (0.4s)
-- Slow (0.8s)
-
-**Hover Effects** (Exclusive Category)
-- Zoom In on Hover
-- Subtle Rotate on Hover
-- Bounce on Hover
-- Grayscale on Hover (Image/Cover blocks only)
-
-**Text Effects** (Exclusive Category)
-- Underline Reveal on Hover
-- Soft Text Fade on Hover
-
-All default modifiers:
-- Are theme-independent (no borders, shadows, spacing, or colors)
-- Use transform, filter, and opacity for visual effects
-- Support accessibility (prefers-reduced-motion)
-- Are performance-optimized (GPU acceleration)
-- Use the `bsm-` prefix for all CSS classes
-
-**Design Principles**
+**Creating Custom Modifiers**
 
 - Additive, not alternative
 - Explicit over implicit

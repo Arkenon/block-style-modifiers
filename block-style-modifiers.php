@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Block Style Modifiers
  * Description: Adds additive, multi-select style modifiers to Gutenberg blocks.
- * Version: 1.0.6
+ * Version: 1.0.7
  * Author: Kadim Gültekin
  * Author URI: https://github.com/Arkenon
  * License: GPLv2 or later
@@ -18,6 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'BSM_PLUGIN_VERSION', get_file_data( __FILE__, array( 'version' => 'Version' ) )['version'] );
 define( 'BSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'BSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+
+require_once BSM_PLUGIN_DIR . 'inc/default-modifiers.php';
 
 if ( ! function_exists( "block_style_modifiers_get_registry" ) ) {
     /**
@@ -160,6 +162,13 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
             BSM_PLUGIN_VERSION
         );
 
+        wp_enqueue_style(
+            'block-style-modifier-editor-style-custom',
+            BSM_PLUGIN_URL.'/assets/default-modifiers.css',
+            [],
+            BSM_PLUGIN_VERSION
+        );
+
         $inline_css = block_style_modifiers_collect_inline_styles();
         if ( $inline_css ) {
             wp_add_inline_style(
@@ -176,39 +185,15 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
             'before'
         );
     }
-
-
 }
 
 
-if ( ! function_exists( "block_style_modifiers_enqueue_frontend_styles" ) ) {
-    /**
-     * Enqueue frontend styles for block style modifiers.
-     * @return void
-     * @since 1.0.0
-     */
-    function block_style_modifiers_enqueue_frontend_styles(): void {
-        $inline_css = block_style_modifiers_collect_inline_styles();
-        if ( ! $inline_css ) {
-            return;
-        }
+// Initialize plugin on plugins_loaded hook
+add_action( 'plugins_loaded', function (){
+    // Load default modifiers
+    add_action('init', 'block_style_modifiers_register_defaults');
 
-        wp_register_style( 'block-style-modifiers-style', false, [], BSM_PLUGIN_VERSION );
-        wp_enqueue_style( 'block-style-modifiers-style' );
+    // Enqueue assets both for editor and frontend
+    add_action( 'enqueue_block_assets', 'block_style_modifiers_enqueue_editor_assets' );
 
-        wp_add_inline_style(
-            'block-style-modifiers-style',
-            esc_html( $inline_css )
-        );
-    }
-
-
-}
-
-add_action('plugins_loaded', function (){
-    // Include default modifiers
-    require_once BSM_PLUGIN_DIR . 'inc/default-modifiers.php';
-
-    add_action( 'wp_enqueue_scripts', 'block_style_modifiers_enqueue_frontend_styles' );
-    add_action( 'enqueue_block_editor_assets', 'block_style_modifiers_enqueue_editor_assets' );
-});
+} );

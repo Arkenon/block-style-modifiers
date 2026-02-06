@@ -50,7 +50,7 @@ const normalizeCategoryObject = (category) => {
  */
 const getModifiersForBlock = (blockName) => {
     const registry = window.__BLOCK_STYLE_MODIFIERS__ || {};
-    
+
     const globalModifiers = registry['*'] || {};
 
     // Check if blockName is an array
@@ -145,12 +145,27 @@ const withStyleModifiers = createHigherOrderComponent(
         const groupedModifiers = groupModifiersByCategory(allModifiers);
         const selectedClasses = attributes.styleModifiers || [];
         
+
         const [draggedIndex, setDraggedIndex] = useState(null);
 
         // Toggle modifier selection (category-aware)
         const toggleModifier = (modifierClass, categorySlug) => {
             const categoryGroup = groupedModifiers[categorySlug];
-            if (!categoryGroup) return;
+
+            // Fallback: If category group is not found, just toggle the modifier directly
+            if (!categoryGroup) {
+                const isSelected = selectedClasses.includes(modifierClass);
+                if (isSelected) {
+                    setAttributes({
+                        styleModifiers: selectedClasses.filter(c => c !== modifierClass)
+                    });
+                } else {
+                    setAttributes({
+                        styleModifiers: [...selectedClasses, modifierClass]
+                    });
+                }
+                return;
+            }
 
             // Check if category is exclusive
             const isExclusive = categoryGroup.meta.exclusive;
@@ -216,7 +231,11 @@ const withStyleModifiers = createHigherOrderComponent(
         // Get selected modifiers with metadata
         const selectedModifiers = selectedClasses.map(className => {
             const mod = allModifiers.find(m => m.class === className);
-            return mod || { class: className, label: className };
+            return mod || {
+                class: className,
+                label: className,
+                category: { slug: 'uncategorized' }
+            };
         });
 
         return (

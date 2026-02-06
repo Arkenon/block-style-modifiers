@@ -1,0 +1,413 @@
+/**
+ * Block Style Modifiers - Default Styles
+ * Theme-independent, universal style modifiers for WordPress blocks
+ *
+ * Philosophy:
+ * - Enhance behavior, not visual design
+ * - No borders, shadows, spacing, or color palettes
+ * - Work with any theme without conflicts
+ * - Atomic and performant
+ *
+ * @package Block_Style_Modifiers
+ * @version 1.0.7
+ */
+
+/* ========================================
+   1️⃣ ANIMATIONS (Entrance)
+   Category: Exclusive (radio behavior)
+   Applied to: Group, Row, Stack, Grid, Column, Columns (wrapper blocks only)
+   ======================================== */
+
+/* Fade In */
+@keyframes bsm-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.bsm-fade-in {
+    opacity: 0;
+    animation: bsm-fadeIn 0.6s ease-out forwards;
+}
+
+/* Slide Up */
+@keyframes bsm-slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.bsm-slide-up {
+    opacity: 0;
+    animation: bsm-slideUp 0.6s ease-out forwards;
+}
+
+/* Scale In */
+@keyframes bsm-scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.bsm-scale-in {
+    opacity: 0;
+    animation: bsm-scaleIn 0.5s ease-out forwards;
+}
+
+/* Slide Down */
+@keyframes bsm-slideDown {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.bsm-slide-down {
+    opacity: 0;
+    animation: bsm-slideDown 0.6s ease-out forwards;
+}
+
+/* Slide Left */
+@keyframes bsm-slideLeft {
+    from {
+        transform: translateX(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.bsm-slide-left {
+    opacity: 0;
+    animation: bsm-slideLeft 0.6s ease-out forwards;
+}
+
+/* Slide Right */
+@keyframes bsm-slideRight {
+    from {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.bsm-slide-right {
+    opacity: 0;
+    animation: bsm-slideRight 0.6s ease-out forwards;
+}
+
+/* Rotate In */
+@keyframes bsm-rotateIn {
+    from {
+        transform: rotate(-10deg);
+        opacity: 0;
+    }
+    to {
+        transform: rotate(0);
+        opacity: 1;
+    }
+}
+
+.bsm-rotate-in {
+    opacity: 0;
+    animation: bsm-rotateIn 0.6s ease-out forwards;
+}
+
+/* Flip In X */
+@keyframes bsm-flipInX {
+    from {
+        transform: perspective(400px) rotateX(-90deg);
+        opacity: 0;
+    }
+    to {
+        transform: perspective(400px) rotateX(0);
+        opacity: 1;
+    }
+}
+
+.bsm-flip-in-x {
+    opacity: 0;
+    animation: bsm-flipInX 0.7s ease-out forwards;
+    backface-visibility: visible;
+}
+
+/* ========================================
+   2️⃣ ANIMATION DELAY
+   Category: Exclusive (radio behavior)
+   Note: Only works with Animation category
+   Applied to: All blocks with animations
+   ======================================== */
+
+.bsm-delay-fast {
+    animation-delay: 0.2s !important;
+}
+
+.bsm-delay-normal {
+    animation-delay: 0.4s !important;
+}
+
+.bsm-delay-slow {
+    animation-delay: 0.8s !important;
+}
+
+/* ========================================
+   3️⃣ HOVER EFFECTS (Transform-based)
+   Category: Exclusive (radio behavior)
+   Applied to: Image, Cover, Media & Text (content blocks only)
+   ======================================== */
+
+/* Zoom In on Hover */
+.bsm-zoom-hover {
+    transition: transform 0.3s ease-out;
+    overflow: hidden;
+}
+
+.bsm-zoom-hover:hover {
+    transform: scale(1.05);
+}
+
+/* Subtle Rotate on Hover */
+.bsm-rotate-hover {
+    transition: transform 0.3s ease-out;
+}
+
+.bsm-rotate-hover:hover {
+    transform: rotate(2deg);
+}
+
+/* Very Subtle Bounce on Hover */
+.bsm-bounce-hover {
+    transition: transform 0.3s ease-out;
+}
+
+.bsm-bounce-hover:hover {
+    animation: bsm-bounceEffect 0.6s ease-in-out;
+}
+
+@keyframes bsm-bounceEffect {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Grayscale to Color on Hover (Image/Cover only) */
+.bsm-grayscale-to-color-hover img,
+.bsm-grayscale-to-color-hover .wp-block-cover__image-background {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease-out;
+}
+
+.bsm-grayscale-to-color-hover:hover img,
+.bsm-grayscale-to-color-hover:hover .wp-block-cover__image-background {
+    filter: grayscale(0%);
+}
+
+/* Shake on Hover */
+.bsm-shake-hover:hover {
+    animation: bsm-shakeEffect 0.5s ease-in-out;
+}
+
+@keyframes bsm-shakeEffect {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(3px);
+    }
+}
+
+/* Brightness on Hover */
+.bsm-brightness-hover {
+    transition: filter 0.3s ease-out;
+}
+
+.bsm-brightness-hover:hover {
+    filter: brightness(1.2);
+}
+
+/* Darken on Hover */
+.bsm-darken-hover {
+    transition: filter 0.3s ease-out;
+}
+
+.bsm-darken-hover:hover {
+    filter: brightness(0.8);
+}
+
+/* Blur to Focus on Hover */
+.bsm-blur-to-focus-hover img,
+.bsm-blur-to-focus-hover .wp-block-cover__image-background {
+    filter: blur(3px);
+    transition: filter 0.3s ease-out;
+}
+
+.bsm-blur-to-focus-hover:hover img,
+.bsm-blur-to-focus-hover:hover .wp-block-cover__image-background {
+    filter: blur(0);
+}
+
+
+/* ========================================
+   4️⃣ TEXT EFFECTS (Micro-interactions)
+   Category: Exclusive (radio behavior)
+   Applied to: Paragraph, Heading
+   ======================================== */
+
+/* Underline Reveal on Hover */
+.bsm-underline-reveal {
+    position: relative;
+    display: inline-block;
+}
+
+.bsm-underline-reveal::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 0.3s ease-out;
+}
+
+.bsm-underline-reveal:hover::after {
+    width: 100%;
+}
+
+/* Soft Text Fade on Hover */
+.bsm-text-fade-hover {
+    transition: opacity 0.3s ease-out;
+}
+
+.bsm-text-fade-hover:hover {
+    opacity: 0.7;
+}
+
+/* ========================================
+   ACCESSIBILITY & PERFORMANCE
+   ======================================== */
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .bsm-fade-in,
+    .bsm-slide-up,
+    .bsm-slide-down,
+    .bsm-slide-left,
+    .bsm-slide-right,
+    .bsm-scale-in,
+    .bsm-rotate-in,
+    .bsm-flip-in-x {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+
+    .bsm-zoom-hover,
+    .bsm-rotate-hover,
+    .bsm-bounce-hover,
+    .bsm-shake-hover,
+    .bsm-brightness-hover,
+    .bsm-darken-hover,
+    .bsm-blur-to-focus-hover,
+    .bsm-grayscale-to-color-hover,
+    .bsm-underline-reveal,
+    .bsm-text-fade-hover {
+        transition: none !important;
+        animation: none !important;
+    }
+
+    .bsm-zoom-hover:hover,
+    .bsm-rotate-hover:hover,
+    .bsm-bounce-hover:hover,
+    .bsm-shake-hover:hover {
+        transform: none !important;
+    }
+
+    .bsm-brightness-hover:hover,
+    .bsm-darken-hover:hover {
+        filter: none !important;
+    }
+
+    .bsm-blur-to-focus-hover img,
+    .bsm-blur-to-focus-hover:hover img,
+    .bsm-blur-to-focus-hover .wp-block-cover__image-background,
+    .bsm-blur-to-focus-hover:hover .wp-block-cover__image-background {
+        filter: none !important;
+    }
+
+
+    .bsm-grayscale-to-color-hover img,
+    .bsm-grayscale-to-color-hover:hover img,
+    .bsm-grayscale-to-color-hover .wp-block-cover__image-background,
+    .bsm-grayscale-to-color-hover:hover .wp-block-cover__image-background {
+        filter: none !important;
+    }
+
+    .bsm-underline-reveal::after {
+        display: none !important;
+    }
+
+    .bsm-text-fade-hover:hover {
+        opacity: 1 !important;
+    }
+}
+
+/* GPU acceleration for transforms and animations */
+.bsm-zoom-hover,
+.bsm-rotate-hover,
+.bsm-bounce-hover,
+.bsm-shake-hover {
+    will-change: transform;
+}
+
+.bsm-fade-in,
+.bsm-slide-up,
+.bsm-slide-down,
+.bsm-slide-left,
+.bsm-slide-right,
+.bsm-scale-in,
+.bsm-rotate-in,
+.bsm-flip-in-x {
+    will-change: transform, opacity;
+}
+
+.bsm-grayscale-to-color-hover img,
+.bsm-grayscale-to-color-hover .wp-block-cover__image-background,
+.bsm-blur-to-focus-hover img,
+.bsm-blur-to-focus-hover .wp-block-cover__image-background,
+.bsm-brightness-hover,
+.bsm-darken-hover {
+    will-change: filter;
+}
+
+.bsm-text-fade-hover {
+    will-change: opacity;
+}
+

@@ -20,6 +20,7 @@ define('BSM_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('BSM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 require_once BSM_PLUGIN_DIR . 'inc/default-modifiers.php';
+require_once BSM_PLUGIN_DIR . 'inc/class-bsm-rest-controller.php';
 
 if (!function_exists("block_style_modifiers_get_registry")) {
     /**
@@ -260,13 +261,172 @@ if (!function_exists("block_style_modifiers_enqueue_editor_assets")) {
     }
 }
 
+if (!function_exists('block_style_modifiers_load_custom_modifiers')) {
+    /**
+     * Load custom modifiers from wp_options
+     *
+     * @return void
+     * @since 1.0.8
+     */
+    function block_style_modifiers_load_custom_modifiers()
+    {
+        // Load custom categories
+        $custom_categories = get_option('bsm_custom_categories', []);
+        if (is_array($custom_categories)) {
+            foreach ($custom_categories as $category) {
+                if (isset($category['slug']) && !empty($category['slug'])) {
+                    block_style_modifiers_register_category(
+                        $category['slug'],
+                        [
+                            'label' => $category['label'] ?? $category['slug'],
+                            'description' => $category['description'] ?? '',
+                            'exclusive' => $category['exclusive'] ?? false,
+                        ]
+                    );
+                }
+            }
+        }
+
+        // Load custom modifiers
+        $custom_modifiers = get_option('bsm_custom_modifiers', []);
+        if (is_array($custom_modifiers)) {
+            foreach ($custom_modifiers as $modifier) {
+                if (isset($modifier['blocks']) && isset($modifier['name']) && isset($modifier['class'])) {
+                    block_style_modifiers_register_style(
+                        $modifier['blocks'],
+                        [
+                            'name' => $modifier['name'],
+                            'label' => $modifier['label'] ?? $modifier['name'],
+                            'class' => $modifier['class'],
+                            'description' => $modifier['description'] ?? '',
+                            'category' => $modifier['category'] ?? '',
+                            'inline_style' => $modifier['inline_style'] ?? '',
+                        ]
+                    );
+                }
+            }
+        }
+    }
+}
+
 
 // Initialize plugin on plugins_loaded hook
 add_action('plugins_loaded', function () {
     // Load default modifiers
     add_action('init', 'block_style_modifiers_register_defaults');
 
+    // Load custom modifiers
+    add_action('init', 'block_style_modifiers_load_custom_modifiers', 11);
+
     // Enqueue assets both for editor and frontend
     add_action('enqueue_block_assets', 'block_style_modifiers_enqueue_editor_assets');
 
+    // Register REST API routes
+    add_action('rest_api_init', function () {
+        $controller = new BSM_REST_Controller();
+        $controller->register_routes();
+    });
+
+    // Add admin menu
+    add_action('admin_menu', 'block_style_modifiers_add_admin_menu');
+
+    // Enqueue admin assets
+    add_action('admin_enqueue_scripts', 'block_style_modifiers_enqueue_admin_assets');
 });
+
+if (!function_exists('block_style_modifiers_add_admin_menu')) {
+    /**
+     * Add admin menu page
+     *
+     * @return void
+     * @since 1.0.8
+     */
+    function block_style_modifiers_add_admin_menu()
+    {
+        add_options_page(
+            __('Block Style Modifiers', 'block-style-modifiers'),
+            __('Block Style Modifiers', 'block-style-modifiers'),
+            'manage_options',
+            'block-style-modifiers',
+            'block_style_modifiers_render_admin_page'
+        );
+    }
+}
+
+if (!function_exists('block_style_modifiers_render_admin_page')) {
+    /**
+     * Render admin page
+     *
+     * @return void
+     * @since 1.0.8
+     */
+    function block_style_modifiers_render_admin_page()
+    {
+        echo '<div class="wrap">';
+        echo '<div id="bsm-admin-root"></div>';
+        echo '</div>';
+    }
+}
+
+if (!function_exists('block_style_modifiers_enqueue_admin_assets')) {
+    /**
+     * Enqueue admin assets
+     *
+     * @param string $hook_suffix
+     * @return void
+     * @since 1.0.8
+     */
+    function block_style_modifiers_enqueue_admin_assets($hook_suffix)
+    {
+        // Only load on our settings page
+        if ($hook_suffix !== 'settings_page_block-style-modifiers') {
+            return;
+        }
+
+        $asset_file = BSM_PLUGIN_DIR . 'build/admin.asset.php';
+
+        if (!file_exists($asset_file)) {
+            return;
+        }
+
+        $asset = include $asset_file;
+
+        wp_enqueue_script(
+            'block-style-modifiers-admin',
+            BSM_PLUGIN_URL . 'build/admin.js',
+            $asset['dependencies'],
+            $asset['version'],
+            true
+        );
+
+        if (function_exists('wp_set_script_translations')) {
+            wp_set_script_translations(
+                'block-style-modifiers-admin',
+                'block-style-modifiers',
+                BSM_PLUGIN_DIR . 'languages'
+            );
+        }
+
+        // Only enqueue CSS if it exists
+        $css_file = BSM_PLUGIN_DIR . 'build/admin.css';
+        if (file_exists($css_file)) {
+            wp_enqueue_style(
+                'block-style-modifiers-admin',
+                BSM_PLUGIN_URL . 'build/admin.css',
+                ['wp-components'],
+                $asset['version']
+            );
+        }
+
+        // Pass data to JavaScript
+        wp_localize_script(
+            'block-style-modifiers-admin',
+            'bsmAdmin',
+            [
+                'apiUrl' => rest_url('block-style-modifiers/v1'),
+                'nonce' => wp_create_nonce('wp_rest'),
+            ]
+        );
+    }
+}
+

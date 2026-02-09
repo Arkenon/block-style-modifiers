@@ -25,6 +25,11 @@ if (!defined('ABSPATH')) {
  */
 function block_style_modifiers_register_defaults()
 {
+    // Check if default modifiers are enabled (default: true)
+    $enable_defaults = get_option('bsm_enable_default_modifiers', true);
+    if (!$enable_defaults) {
+        return;
+    }
 
     /* ========================================
        REGISTER CATEGORIES FIRST
@@ -302,3 +307,72 @@ function block_style_modifiers_register_defaults()
         'category' => 'text-effects',
     ]);
 }
+
+/**
+ * Load custom categories from database
+ *
+ * @since 1.0.8
+ */
+function block_style_modifiers_load_custom_categories()
+{
+    $custom_categories = get_option('bsm_custom_categories', []);
+
+    if (!is_array($custom_categories)) {
+        return;
+    }
+
+    foreach ($custom_categories as $category) {
+        if (!isset($category['slug'])) {
+            continue;
+        }
+
+        block_style_modifiers_register_category(
+            $category['slug'],
+            [
+                'label' => $category['label'] ?? $category['slug'],
+                'description' => $category['description'] ?? '',
+                'exclusive' => $category['exclusive'] ?? false,
+            ]
+        );
+    }
+}
+
+/**
+ * Load custom modifiers from database
+ *
+ * @since 1.0.8
+ */
+function block_style_modifiers_load_custom_modifiers()
+{
+    $custom_modifiers = get_option('bsm_custom_modifiers', []);
+
+    if (!is_array($custom_modifiers)) {
+        return;
+    }
+
+    foreach ($custom_modifiers as $modifier) {
+        if (!isset($modifier['name']) || !isset($modifier['blocks'])) {
+            continue;
+        }
+
+        $blocks = $modifier['blocks'];
+
+        // If blocks is '*', register for all blocks
+        if ($blocks === '*' || (is_array($blocks) && in_array('*', $blocks))) {
+            $blocks = '*';
+        }
+
+        block_style_modifiers_register_style(
+            $blocks,
+            [
+                'name' => $modifier['name'],
+                'label' => $modifier['label'] ?? $modifier['name'],
+                'class' => $modifier['class'],
+                'description' => $modifier['description'] ?? '',
+                'category' => $modifier['category'] ?? '',
+                'inline_style' => $modifier['inline_style'] ?? '',
+            ]
+        );
+    }
+}
+

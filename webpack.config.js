@@ -6,6 +6,7 @@ const config = {
     ...defaultConfig,
     entry: {
         'editor': './src/editor.js',
+        'admin': './src/admin.js',
     },
     output: {
         path: path.resolve(process.cwd(), 'build'),

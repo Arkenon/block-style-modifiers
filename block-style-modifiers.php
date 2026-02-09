@@ -66,6 +66,7 @@ if (!function_exists("block_style_modifiers_register_category")) {
 
         // Validate slug
         if (empty($slug) || !is_string($slug)) {
+            error_log('BSM: Invalid category slug provided');
             return;
         }
 
@@ -81,6 +82,12 @@ if (!function_exists("block_style_modifiers_register_category")) {
 
         // Add slug to the registry for reference
         $category_registry[$slug]['slug'] = $slug;
+
+        // Ensure exclusive is always a boolean
+        $category_registry[$slug]['exclusive'] = (bool) $category_registry[$slug]['exclusive'];
+
+        // Debug log
+        error_log('BSM: Registered category: ' . $slug . ' | exclusive=' . ($category_registry[$slug]['exclusive'] ? 'true' : 'false') . ' | Total categories: ' . count($category_registry));
     }
 }
 
@@ -148,20 +155,16 @@ if (!function_exists("block_style_modifiers_register_single_modifier")) {
             $registry[$block_name] = [];
         }
 
-        // Handle category: if it's a string (slug), resolve it from category registry
-        $category = $modifier['category'] ?? '';
-        if (is_string($category) && !empty($category)) {
-            $category_registry = &block_style_modifiers_get_category_registry();
-            if (isset($category_registry[$category])) {
-                $modifier['category'] = $category_registry[$category];
-            } else {
-                // Category slug not found, create a basic category object
-                $modifier['category'] = [
-                    'slug' => $category,
-                    'label' => $category,
-                    'description' => '',
-                    'exclusive' => false,
-                ];
+        // Handle category: store only the slug, not the entire object
+        // JavaScript will resolve the category from the category registry
+        $category_slug = '';
+        if (isset($modifier['category'])) {
+            if (is_string($modifier['category'])) {
+                // Already a slug, just use it
+                $category_slug = $modifier['category'];
+            } else if (is_array($modifier['category']) && isset($modifier['category']['slug'])) {
+                // Extract slug from category object
+                $category_slug = $modifier['category']['slug'];
             }
         }
 
@@ -174,6 +177,9 @@ if (!function_exists("block_style_modifiers_register_single_modifier")) {
                 'inline_style' => '',
             ]
         );
+
+        // Override category with just the slug
+        $registry[$block_name][$modifier['name']]['category'] = $category_slug;
     }
 }
 
@@ -258,6 +264,10 @@ if (!function_exists("block_style_modifiers_enqueue_editor_assets")) {
             ) . ';',
             'before'
         );
+
+        // Debug log
+        $cat_registry = block_style_modifiers_get_category_registry();
+        error_log('BSM: Enqueuing assets. Category registry count: ' . count($cat_registry) . ' | Keys: ' . implode(', ', array_keys($cat_registry)));
     }
 }
 
@@ -275,12 +285,34 @@ if (!function_exists('block_style_modifiers_load_custom_modifiers')) {
         if (is_array($custom_categories)) {
             foreach ($custom_categories as $category) {
                 if (isset($category['slug']) && !empty($category['slug'])) {
+                    // Convert exclusive to boolean - handle various formats more reliably
+                    $exclusive = false;
+                    if (isset($category['exclusive'])) {
+                        // REST API sends true boolean, but when retrieved from options it might be different
+                        if (is_bool($category['exclusive'])) {
+                            $exclusive = $category['exclusive'];
+                        } else if (is_numeric($category['exclusive'])) {
+                            $exclusive = (int)$category['exclusive'] === 1;
+                        } else if (is_string($category['exclusive'])) {
+                            $exclusive = in_array(strtolower($category['exclusive']), ['true', '1', 'yes', 'on'], true);
+                        }
+                    }
+
+                    // Debug log - remove after testing
+                    error_log(sprintf(
+                        'BSM: Loading custom category: %s | exclusive input=%s (type=%s) | exclusive output=%s',
+                        $category['slug'],
+                        var_export($category['exclusive'] ?? 'not set', true),
+                        gettype($category['exclusive'] ?? null),
+                        $exclusive ? 'true' : 'false'
+                    ));
+
                     block_style_modifiers_register_category(
                         $category['slug'],
                         [
                             'label' => $category['label'] ?? $category['slug'],
                             'description' => $category['description'] ?? '',
-                            'exclusive' => $category['exclusive'] ?? false,
+                            'exclusive' => $exclusive,
                         ]
                     );
                 }

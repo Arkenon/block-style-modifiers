@@ -7,7 +7,13 @@
 
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
-import { Card, CardHeader, CardBody, Button, ButtonGroup } from '@wordpress/components';
+import {
+    Card,
+    CardHeader,
+    CardBody,
+    __experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption,
+} from '@wordpress/components';
 import CategoryManager from './CategoryManager';
 import ModifierManager from './ModifierManager';
 
@@ -28,20 +34,21 @@ const AddStyleModifier = () => {
                         )}
                     </p>
 
-                    <ButtonGroup style={{ marginBottom: '1.5rem', marginTop: '1rem' }}>
-                        <Button
-                            variant={activeSection === 'categories' ? 'primary' : 'secondary'}
-                            onClick={() => setActiveSection('categories')}
-                        >
-                            {__('Modifier Categories', 'block-style-modifiers')}
-                        </Button>
-                        <Button
-                            variant={activeSection === 'modifiers' ? 'primary' : 'secondary'}
-                            onClick={() => setActiveSection('modifiers')}
-                        >
-                            {__('Style Modifiers', 'block-style-modifiers')}
-                        </Button>
-                    </ButtonGroup>
+                    <ToggleGroupControl
+                        value={activeSection}
+                        onChange={setActiveSection}
+                        isBlock
+                        style={{ marginBottom: '1.5rem', marginTop: '1rem' }}
+                    >
+                        <ToggleGroupControlOption
+                            value="categories"
+                            label={__('Modifier Categories', 'block-style-modifiers')}
+                        />
+                        <ToggleGroupControlOption
+                            value="modifiers"
+                            label={__('Style Modifiers', 'block-style-modifiers')}
+                        />
+                    </ToggleGroupControl>
 
                     {activeSection === 'categories' && <CategoryManager />}
                     {activeSection === 'modifiers' && <ModifierManager />}

@@ -257,6 +257,8 @@ const ModifierManager = () => {
                             }
                             disabled={!!editingModifier}
                             required
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -267,6 +269,8 @@ const ModifierManager = () => {
                             value={formData.label}
                             onChange={(value) => setFormData({ ...formData, label: value })}
                             required
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -280,6 +284,8 @@ const ModifierManager = () => {
                             value={formData.class}
                             onChange={(value) => setFormData({ ...formData, class: value })}
                             required
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -290,6 +296,7 @@ const ModifierManager = () => {
                             value={formData.description}
                             onChange={(value) => setFormData({ ...formData, description: value })}
                             rows={2}
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -309,6 +316,8 @@ const ModifierManager = () => {
                                 })),
                             ]}
                             onChange={(value) => setFormData({ ...formData, category: value })}
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -352,6 +361,7 @@ const ModifierManager = () => {
                             value={formData.inline_style}
                             onChange={(value) => setFormData({ ...formData, inline_style: value })}
                             rows={5}
+                            __nextHasNoMarginBottom
                         />
                     </div>
 

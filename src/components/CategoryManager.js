@@ -207,6 +207,8 @@ const CategoryManager = () => {
                             }
                             disabled={!!editingCategory}
                             required
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -217,6 +219,8 @@ const CategoryManager = () => {
                             value={formData.label}
                             onChange={(value) => setFormData({ ...formData, label: value })}
                             required
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -227,6 +231,7 @@ const CategoryManager = () => {
                             value={formData.description}
                             onChange={(value) => setFormData({ ...formData, description: value })}
                             rows={3}
+                            __nextHasNoMarginBottom
                         />
                     </div>
 
@@ -239,6 +244,7 @@ const CategoryManager = () => {
                             )}
                             checked={formData.exclusive}
                             onChange={(value) => setFormData({ ...formData, exclusive: value })}
+                            __nextHasNoMarginBottom
                         />
                     </div>
 

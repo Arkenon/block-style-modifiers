@@ -22,10 +22,21 @@ import '@bsm/editor.scss';
  * @since 1.0.0
  */
 const normalizeCategoryObject = (category) => {
+    // If category is empty or undefined
+    if (!category) {
+        return {
+            slug: 'uncategorized',
+            label: __('Uncategorized', 'block-style-modifiers'),
+            description: '',
+            exclusive: false,
+        };
+    }
+
     // If category is a string (slug), resolve it from the category registry
     if (typeof category === 'string') {
         const categoryRegistry = window.__BLOCK_STYLE_MODIFIERS_CATEGORIES__ || {};
         if (categoryRegistry[category]) {
+            // Found in registry, return it
             return categoryRegistry[category];
         }
         // If slug not found in registry, create a basic category object
@@ -49,11 +60,12 @@ const normalizeCategoryObject = (category) => {
     }
 
     // Return normalized object with defaults
+    // More flexible exclusive check to handle boolean, string, or number values
     return {
         slug: category.slug || 'uncategorized',
         label: category.label || category.slug || 'Uncategorized',
         description: category.description || '',
-        exclusive: category.exclusive === true,
+        exclusive: !!(category.exclusive === true || category.exclusive === 'true' || category.exclusive === 1 || category.exclusive === '1'),
     };
 };
 

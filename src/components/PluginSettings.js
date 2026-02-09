@@ -106,6 +106,7 @@ const PluginSettings = () => {
                             )}
                             checked={enableDefaultModifiers}
                             onChange={setEnableDefaultModifiers}
+                            __nextHasNoMarginBottom
                         />
                     </div>
 

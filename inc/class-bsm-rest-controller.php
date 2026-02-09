@@ -319,8 +319,14 @@ class BSM_REST_Controller extends WP_REST_Controller
      */
     public function get_settings($request)
     {
+        // Get the raw option value, defaulting to '1' if not set
+        $enable_default_modifiers = get_option('bsm_enable_default_modifiers', '1');
+
+        // Convert to boolean
+        $enable_default_modifiers = ($enable_default_modifiers === '1' || $enable_default_modifiers === 1 || $enable_default_modifiers === true);
+
         $settings = [
-            'enable_default_modifiers' => get_option('bsm_enable_default_modifiers', true),
+            'enable_default_modifiers' => $enable_default_modifiers,
         ];
 
         return rest_ensure_response($settings);
@@ -337,7 +343,11 @@ class BSM_REST_Controller extends WP_REST_Controller
     {
         $enable_default = $request->get_param('enable_default_modifiers');
 
-        update_option('bsm_enable_default_modifiers', $enable_default);
+        // Convert boolean to string for reliable storage
+        // WordPress options work better with '1' and '0' than true/false
+        $value_to_save = $enable_default ? '1' : '0';
+
+        update_option('bsm_enable_default_modifiers', $value_to_save);
 
         return rest_ensure_response([
             'success' => true,

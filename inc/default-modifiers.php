@@ -26,7 +26,12 @@ if (!defined('ABSPATH')) {
 function block_style_modifiers_register_defaults()
 {
     // Check if default modifiers are enabled (default: true)
-    $enable_defaults = get_option('bsm_enable_default_modifiers', true);
+    // Get the raw option value, defaulting to '1' if not set
+    $enable_defaults = get_option('bsm_enable_default_modifiers', '1');
+
+    // Convert to boolean for comparison
+    $enable_defaults = ($enable_defaults === '1' || $enable_defaults === 1 || $enable_defaults === true);
+
     if (!$enable_defaults) {
         return;
     }

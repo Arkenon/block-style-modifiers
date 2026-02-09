@@ -10,31 +10,80 @@
  * Text Domain: block-style-modifiers
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit;
 }
 
 // Define constants
-define( 'BSM_PLUGIN_VERSION', get_file_data( __FILE__, array( 'version' => 'Version' ) )['version'] );
-define( 'BSM_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'BSM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define('BSM_PLUGIN_VERSION', get_file_data(__FILE__, array('version' => 'Version'))['version']);
+define('BSM_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('BSM_PLUGIN_URL', plugin_dir_url(__FILE__));
 
 require_once BSM_PLUGIN_DIR . 'inc/default-modifiers.php';
 
-if ( ! function_exists( "block_style_modifiers_get_registry" ) ) {
+if (!function_exists("block_style_modifiers_get_registry")) {
     /**
      * Get the registry of block style modifiers.
      * @return array The registry of block style modifiers.
      * @since 1.0.0
      */
-    function &block_style_modifiers_get_registry(): array {
+    function &block_style_modifiers_get_registry(): array
+    {
         static $registry = [];
 
         return $registry;
     }
 }
 
-if ( ! function_exists( "block_style_modifiers_register_style" ) ) {
+if (!function_exists("block_style_modifiers_get_category_registry")) {
+    /**
+     * Get the registry of block style modifier categories.
+     * @return array The registry of categories.
+     * @since 1.0.8
+     */
+    function &block_style_modifiers_get_category_registry(): array
+    {
+        static $category_registry = [];
+
+        return $category_registry;
+    }
+}
+
+if (!function_exists("block_style_modifiers_register_category")) {
+    /**
+     * Register a block style modifier category.
+     *
+     * @param string $slug Category slug (unique identifier).
+     * @param array $args Category arguments: label, description, exclusive.
+     *
+     * @return void
+     * @since 1.0.8
+     */
+    function block_style_modifiers_register_category(string $slug, array $args): void
+    {
+        $category_registry = &block_style_modifiers_get_category_registry();
+
+        // Validate slug
+        if (empty($slug) || !is_string($slug)) {
+            return;
+        }
+
+        // Normalize category data
+        $category_registry[$slug] = wp_parse_args(
+            $args,
+            [
+                'label' => $slug,
+                'description' => '',
+                'exclusive' => false,
+            ]
+        );
+
+        // Add slug to the registry for reference
+        $category_registry[$slug]['slug'] = $slug;
+    }
+}
+
+if (!function_exists("block_style_modifiers_register_style")) {
     /**
      * Register a block style modifier.
      * Registers a style modifier for a specific block.
@@ -45,40 +94,41 @@ if ( ! function_exists( "block_style_modifiers_register_style" ) ) {
      * @return void
      * @since 1.0.0
      */
-    function block_style_modifiers_register_style( $block_name, array $modifier ): void {
+    function block_style_modifiers_register_style($block_name, array $modifier): void
+    {
 
         // Validate if block name and modifier name are string or array
-        if ( ! is_string( $block_name ) && ! is_array( $block_name ) ) {
+        if (!is_string($block_name) && !is_array($block_name)) {
             return;
         }
 
         // Validate modifier name is set and is a string without spaces
-        if ( ! isset( $modifier['name'] ) || ! is_string( $modifier['name'] ) ) {
+        if (!isset($modifier['name']) || !is_string($modifier['name'])) {
             return;
         }
 
         // Validate modifier name does not contain spaces
-        if ( str_contains( $modifier['name'], ' ' ) ) {
+        if (str_contains($modifier['name'], ' ')) {
             return;
         }
 
         // Validate modifier class is set and is a string
-        if ( ! isset( $modifier['class'] ) || ! is_string( $modifier['class'] ) ) {
+        if (!isset($modifier['class']) || !is_string($modifier['class'])) {
             return;
         }
 
 
-        if ( is_array( $block_name ) ) {
-            foreach ( $block_name as $block ) {
-                block_style_modifiers_register_single_modifier( $block, $modifier );
+        if (is_array($block_name)) {
+            foreach ($block_name as $block) {
+                block_style_modifiers_register_single_modifier($block, $modifier);
             }
         } else {
-            block_style_modifiers_register_single_modifier( $block_name, $modifier );
+            block_style_modifiers_register_single_modifier($block_name, $modifier);
         }
     }
 }
 
-if ( ! function_exists( "block_style_modifiers_register_single_modifier" ) ) {
+if (!function_exists("block_style_modifiers_register_single_modifier")) {
     /**
      * Register a single block style modifier.
      *
@@ -88,20 +138,38 @@ if ( ! function_exists( "block_style_modifiers_register_single_modifier" ) ) {
      * @return void
      * @since 1.0.0
      */
-    function block_style_modifiers_register_single_modifier( string $block_name, array $modifier ) {
+    function block_style_modifiers_register_single_modifier(string $block_name, array $modifier)
+    {
         $registry = &block_style_modifiers_get_registry();
 
 
-        if ( ! isset( $registry[ $block_name ] ) ) {
-            $registry[ $block_name ] = [];
+        if (!isset($registry[$block_name])) {
+            $registry[$block_name] = [];
         }
 
-        $registry[ $block_name ][ $modifier['name'] ] = wp_parse_args(
+        // Handle category: if it's a string (slug), resolve it from category registry
+        $category = $modifier['category'] ?? '';
+        if (is_string($category) && !empty($category)) {
+            $category_registry = &block_style_modifiers_get_category_registry();
+            if (isset($category_registry[$category])) {
+                $modifier['category'] = $category_registry[$category];
+            } else {
+                // Category slug not found, create a basic category object
+                $modifier['category'] = [
+                    'slug' => $category,
+                    'label' => $category,
+                    'description' => '',
+                    'exclusive' => false,
+                ];
+            }
+        }
+
+        $registry[$block_name][$modifier['name']] = wp_parse_args(
             $modifier,
             [
-                'label'        => $modifier['name'],
-                'description'  => '',
-                'category'     => '',
+                'label' => $modifier['name'],
+                'description' => '',
+                'category' => '',
                 'inline_style' => '',
             ]
         );
@@ -109,49 +177,51 @@ if ( ! function_exists( "block_style_modifiers_register_single_modifier" ) ) {
 }
 
 
-if ( ! function_exists( "block_style_modifiers_collect_inline_styles" ) ) {
+if (!function_exists("block_style_modifiers_collect_inline_styles")) {
     /**
      * Collect inline styles from all registered modifiers.
      *
      * @return string
      * @since 1.0.0
      */
-    function block_style_modifiers_collect_inline_styles(): string {
+    function block_style_modifiers_collect_inline_styles(): string
+    {
         $registry = &block_style_modifiers_get_registry();
-        $styles   = '';
+        $styles = '';
 
-        foreach ( $registry as $block => $modifiers ) {
-            foreach ( $modifiers as $modifier ) {
-                if ( ! empty( $modifier['inline_style'] ) ) {
+        foreach ($registry as $block => $modifiers) {
+            foreach ($modifiers as $modifier) {
+                if (!empty($modifier['inline_style'])) {
                     $styles .= $modifier['inline_style'];
                 }
             }
         }
 
-        return trim( $styles );
+        return trim($styles);
     }
 }
 
 
-if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
+if (!function_exists("block_style_modifiers_enqueue_editor_assets")) {
     /**
      * Enqueue editor assets for block style modifiers.
      *
      * @return void
      * @since 1.0.0
      */
-    function block_style_modifiers_enqueue_editor_assets(): void {
+    function block_style_modifiers_enqueue_editor_assets(): void
+    {
         wp_enqueue_script(
             'block-style-modifiers-editor',
             BSM_PLUGIN_URL . '/build/editor.js',
-            [ 'wp-blocks', 'wp-element', 'wp-components', 'wp-compose', 'wp-data', 'wp-hooks', 'wp-editor' ],
+            ['wp-blocks', 'wp-element', 'wp-components', 'wp-compose', 'wp-data', 'wp-hooks', 'wp-editor'],
             BSM_PLUGIN_VERSION,
             true
         );
 
-        if ( function_exists( 'wp_set_script_translations' ) ) {
-            $path = defined( 'BSM_PLUGIN_DIR' ) ? BSM_PLUGIN_DIR . 'languages' : '';
-            wp_set_script_translations( 'block-style-modifiers-editor', 'block-style-modifiers', $path );
+        if (function_exists('wp_set_script_translations')) {
+            $path = defined('BSM_PLUGIN_DIR') ? BSM_PLUGIN_DIR . 'languages' : '';
+            wp_set_script_translations('block-style-modifiers-editor', 'block-style-modifiers', $path);
         }
 
         // Enqueue built editor stylesheet
@@ -164,16 +234,16 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
 
         wp_enqueue_style(
             'block-style-modifier-editor-style-custom',
-            BSM_PLUGIN_URL.'/assets/default-modifiers.css',
+            BSM_PLUGIN_URL . '/assets/default-modifiers.css',
             [],
             BSM_PLUGIN_VERSION
         );
 
         $inline_css = block_style_modifiers_collect_inline_styles();
-        if ( $inline_css ) {
+        if ($inline_css) {
             wp_add_inline_style(
                 'block-style-modifiers-editor-style',
-                esc_html( $inline_css )
+                esc_html($inline_css)
             );
         }
 
@@ -181,6 +251,9 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
             'block-style-modifiers-editor',
             'window.__BLOCK_STYLE_MODIFIERS__ = ' . wp_json_encode(
                 block_style_modifiers_get_registry()
+            ) . ';' .
+            'window.__BLOCK_STYLE_MODIFIERS_CATEGORIES__ = ' . wp_json_encode(
+                block_style_modifiers_get_category_registry()
             ) . ';',
             'before'
         );
@@ -189,11 +262,11 @@ if ( ! function_exists( "block_style_modifiers_enqueue_editor_assets" ) ) {
 
 
 // Initialize plugin on plugins_loaded hook
-add_action( 'plugins_loaded', function (){
+add_action('plugins_loaded', function () {
     // Load default modifiers
     add_action('init', 'block_style_modifiers_register_defaults');
 
     // Enqueue assets both for editor and frontend
-    add_action( 'enqueue_block_assets', 'block_style_modifiers_enqueue_editor_assets' );
+    add_action('enqueue_block_assets', 'block_style_modifiers_enqueue_editor_assets');
 
-} );
+});

@@ -284,7 +284,6 @@
 /* Underline Reveal on Hover */
 .bsm-underline-reveal {
     position: relative;
-    display: inline-block;
 }
 
 .bsm-underline-reveal::after {

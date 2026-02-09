@@ -17,11 +17,26 @@ import '@bsm/editor.scss';
 
 /**
  * Normalize category to structured object format
- * @param {Object} category - Category object with slug, label, description, exclusive
+ * @param {Object|string} category - Category object or slug string
  * @returns {Object} Normalized category object
  * @since 1.0.0
  */
 const normalizeCategoryObject = (category) => {
+    // If category is a string (slug), resolve it from the category registry
+    if (typeof category === 'string') {
+        const categoryRegistry = window.__BLOCK_STYLE_MODIFIERS_CATEGORIES__ || {};
+        if (categoryRegistry[category]) {
+            return categoryRegistry[category];
+        }
+        // If slug not found in registry, create a basic category object
+        return {
+            slug: category,
+            label: category,
+            description: '',
+            exclusive: false,
+        };
+    }
+
     // Category must be an object
     if (typeof category !== 'object' || category === null) {
         console.error('Block Style Modifiers: Category must be an object with slug, label, description, and exclusive properties.');

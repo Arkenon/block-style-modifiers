@@ -31,10 +31,10 @@ const AdminDashboard = () => {
     ];
 
     return (
-        <div className="bsm-admin">
-            <div className="bsm-admin__header">
-                <h1>{__('Block Style Modifiers', 'block-style-modifiers')}</h1>
-                <p>
+        <div style={{ maxWidth: '1000px', margin: '24px auto', padding: '0 24px', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif' }}>
+            <div style={{ marginBottom: '32px' }}>
+                <h1 style={{ fontSize: '28px', fontWeight: '600', marginBottom: '8px', color: '#1d2327' }}>{__('Block Style Modifiers', 'block-style-modifiers')}</h1>
+                <p style={{ fontSize: '15px', color: '#50575e', margin: 0 }}>
                     {__(
                         'Manage custom style modifiers and categories for your Gutenberg blocks.',
                         'block-style-modifiers'

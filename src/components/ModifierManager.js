@@ -217,7 +217,7 @@ const ModifierManager = () => {
 
     if (loading) {
         return (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}>
                 <Spinner />
             </div>
         );
@@ -235,61 +235,78 @@ const ModifierManager = () => {
                 </Notice>
             )}
 
-            <Card style={{ marginBottom: '1.5rem' }}>
-                <CardHeader>
-                    <h3>
+            <Card style={{ marginBottom: '24px', border: '1px solid #e2e4e7', borderRadius: '4px' }}>
+                <CardHeader style={{ padding: '16px 24px', borderBottom: '1px solid #e2e4e7', background: '#f8f9f9', margin: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
                         {editingModifier
                             ? __('Edit Modifier', 'block-style-modifiers')
                             : __('Add New Modifier', 'block-style-modifiers')}
                     </h3>
                 </CardHeader>
-                <CardBody>
-                    <div className="bsm-admin__form-row">
-                        <TextControl
-                            label={__('Modifier Name', 'block-style-modifiers')}
-                            help={__(
-                                'Unique identifier (lowercase, no spaces, use hyphens)',
-                                'block-style-modifiers'
-                            )}
-                            value={formData.name}
-                            onChange={(value) =>
-                                setFormData({ ...formData, name: value.toLowerCase() })
-                            }
-                            disabled={!!editingModifier}
-                            required
-                            __next40pxDefaultSize
-                            __nextHasNoMarginBottom
-                        />
-                    </div>
+                <CardBody style={{ padding: '24px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <TextControl
+                                label={__('Modifier Name', 'block-style-modifiers')}
+                                help={__(
+                                    'Unique identifier (lowercase, no spaces, use hyphens)',
+                                    'block-style-modifiers'
+                                )}
+                                value={formData.name}
+                                onChange={(value) =>
+                                    setFormData({ ...formData, name: value.toLowerCase() })
+                                }
+                                disabled={!!editingModifier}
+                                required
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
 
-                    <div className="bsm-admin__form-row">
-                        <TextControl
-                            label={__('Modifier Label', 'block-style-modifiers')}
-                            help={__('Display name for the modifier', 'block-style-modifiers')}
-                            value={formData.label}
-                            onChange={(value) => setFormData({ ...formData, label: value })}
-                            required
-                            __next40pxDefaultSize
-                            __nextHasNoMarginBottom
-                        />
-                    </div>
+                            <TextControl
+                                label={__('Modifier Label', 'block-style-modifiers')}
+                                help={__('Display name for the modifier', 'block-style-modifiers')}
+                                value={formData.label}
+                                onChange={(value) => setFormData({ ...formData, label: value })}
+                                required
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                        </div>
 
-                    <div className="bsm-admin__form-row">
-                        <TextControl
-                            label={__('CSS Class', 'block-style-modifiers')}
-                            help={__(
-                                'CSS class to apply (e.g., my-custom-style)',
-                                'block-style-modifiers'
-                            )}
-                            value={formData.class}
-                            onChange={(value) => setFormData({ ...formData, class: value })}
-                            required
-                            __next40pxDefaultSize
-                            __nextHasNoMarginBottom
-                        />
-                    </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '20px' }}>
+                            <TextControl
+                                label={__('CSS Class', 'block-style-modifiers')}
+                                help={__(
+                                    'CSS class to apply (e.g., my-custom-style)',
+                                    'block-style-modifiers'
+                                )}
+                                value={formData.class}
+                                onChange={(value) => setFormData({ ...formData, class: value })}
+                                required
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
 
-                    <div className="bsm-admin__form-row">
+                            <SelectControl
+                                label={__('Category', 'block-style-modifiers')}
+                                help={__(
+                                    'Optional organization',
+                                    'block-style-modifiers'
+                                )}
+                                value={formData.category}
+                                options={[
+                                    { value: '', label: __('No Category', 'block-style-modifiers') },
+                                    ...categories.map((cat) => ({
+                                        value: cat.slug,
+                                        label: cat.label,
+                                    })),
+                                ]}
+                                onChange={(value) => setFormData({ ...formData, category: value })}
+                                __next40pxDefaultSize
+                                __nextHasNoMarginBottom
+                            />
+                        </div>
+
                         <TextareaControl
                             label={__('Description', 'block-style-modifiers')}
                             help={__('Optional description for the modifier', 'block-style-modifiers')}
@@ -298,35 +315,12 @@ const ModifierManager = () => {
                             rows={2}
                             __nextHasNoMarginBottom
                         />
-                    </div>
 
-                    <div className="bsm-admin__form-row">
-                        <SelectControl
-                            label={__('Category', 'block-style-modifiers')}
-                            help={__(
-                                'Optional: Assign to a category to organize modifiers',
-                                'block-style-modifiers'
-                            )}
-                            value={formData.category}
-                            options={[
-                                { value: '', label: __('No Category', 'block-style-modifiers') },
-                                ...categories.map((cat) => ({
-                                    value: cat.slug,
-                                    label: cat.label,
-                                })),
-                            ]}
-                            onChange={(value) => setFormData({ ...formData, category: value })}
-                            __next40pxDefaultSize
-                            __nextHasNoMarginBottom
-                        />
-                    </div>
-
-                    <div className="bsm-admin__form-row">
-                        <fieldset>
-                            <legend style={{ fontWeight: '600', marginBottom: '0.5rem' }}>
+                        <div style={{ background: '#f8f9f9', padding: '16px', borderRadius: '4px', border: '1px solid #e2e4e7' }}>
+                            <div style={{ fontWeight: '600', marginBottom: '4px', color: '#1e1e1e' }}>
                                 {__('Apply to Blocks', 'block-style-modifiers')}
-                            </legend>
-                            <p style={{ fontSize: '0.9em', color: '#646970', marginBottom: '1rem' }}>
+                            </div>
+                            <p style={{ fontSize: '13px', color: '#646970', margin: '0 0 16px 0' }}>
                                 {__(
                                     'Select which blocks this modifier should be available for',
                                     'block-style-modifiers'
@@ -335,8 +329,8 @@ const ModifierManager = () => {
                             <div
                                 style={{
                                     display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                                    gap: '0.5rem',
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                                    gap: '12px',
                                 }}
                             >
                                 {commonBlocks.map((block) => (
@@ -345,13 +339,12 @@ const ModifierManager = () => {
                                         label={block.label}
                                         checked={formData.blocks.includes(block.value)}
                                         onChange={() => toggleBlock(block.value)}
+                                        __nextHasNoMarginBottom
                                     />
                                 ))}
                             </div>
-                        </fieldset>
-                    </div>
+                        </div>
 
-                    <div className="bsm-admin__form-row">
                         <TextareaControl
                             label={__('Inline CSS (Optional)', 'block-style-modifiers')}
                             help={__(
@@ -360,85 +353,95 @@ const ModifierManager = () => {
                             )}
                             value={formData.inline_style}
                             onChange={(value) => setFormData({ ...formData, inline_style: value })}
-                            rows={5}
+                            rows={4}
+                            style={{ fontFamily: 'monospace' }}
                             __nextHasNoMarginBottom
                         />
-                    </div>
 
-                    <div className="bsm-admin__button-group">
-                        <Button
-                            variant="primary"
-                            onClick={saveModifier}
-                            isBusy={saving}
-                            disabled={saving}
-                        >
-                            {saving
-                                ? __('Saving...', 'block-style-modifiers')
-                                : editingModifier
-                                ? __('Update Modifier', 'block-style-modifiers')
-                                : __('Add Modifier', 'block-style-modifiers')}
-                        </Button>
-
-                        {editingModifier && (
-                            <Button variant="secondary" onClick={resetForm} disabled={saving}>
-                                {__('Cancel', 'block-style-modifiers')}
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '8px', borderTop: '1px solid #e2e4e7', paddingTop: '20px' }}>
+                            <Button
+                                variant="primary"
+                                onClick={saveModifier}
+                                isBusy={saving}
+                                disabled={saving}
+                            >
+                                {saving
+                                    ? __('Saving...', 'block-style-modifiers')
+                                    : editingModifier
+                                        ? __('Update Modifier', 'block-style-modifiers')
+                                        : __('Add Modifier', 'block-style-modifiers')}
                             </Button>
-                        )}
+
+                            {editingModifier && (
+                                <Button variant="secondary" onClick={resetForm} disabled={saving}>
+                                    {__('Cancel', 'block-style-modifiers')}
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 </CardBody>
             </Card>
 
-            <div className="bsm-admin__item-list">
-                <h3>{__('Existing Modifiers', 'block-style-modifiers')}</h3>
+            <div style={{ marginTop: '32px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#1e1e1e' }}>{__('Existing Modifiers', 'block-style-modifiers')}</h3>
 
                 {modifiers.length === 0 ? (
-                    <div className="bsm-admin__empty-state">
-                        <p>{__('No custom modifiers created yet.', 'block-style-modifiers')}</p>
-                    </div>
+                    <Card style={{ padding: '32px', textAlign: 'center', background: '#f9f9f9' }}>
+                        <p style={{ margin: 0, color: '#646970', fontSize: '15px' }}>{__('No custom modifiers created yet.', 'block-style-modifiers')}</p>
+                    </Card>
                 ) : (
-                    modifiers.map((modifier) => (
-                        <Card key={modifier.name} className="bsm-admin__item-card">
-                            <CardHeader>
-                                <div style={{ flex: 1 }}>
-                                    <strong>{modifier.label}</strong>
-                                    <div style={{ fontSize: '0.85em', color: '#646970' }}>
-                                        {__('Name:', 'block-style-modifiers')} {modifier.name} |{' '}
-                                        {__('Class:', 'block-style-modifiers')} {modifier.class}
+                    <div style={{ display: 'grid', gap: '16px' }}>
+                        {modifiers.map((modifier) => (
+                            <Card key={modifier.name}>
+                                <CardHeader style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0' }}>
+                                    <div>
+                                        <strong style={{ fontSize: '16px' }}>{modifier.label}</strong>
+                                        <div style={{ fontSize: '13px', color: '#646970', marginTop: '6px', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                                            <span><span style={{ fontWeight: '500' }}>{__('Name:', 'block-style-modifiers')}</span> <span style={{ fontFamily: 'monospace', background: '#f0f0f1', padding: '2px 6px', borderRadius: '3px' }}>{modifier.name}</span></span>
+                                            <span style={{ color: '#dcdcde' }}>|</span>
+                                            <span><span style={{ fontWeight: '500' }}>{__('Class:', 'block-style-modifiers')}</span> <span style={{ fontFamily: 'monospace', background: '#f0f0f1', padding: '2px 6px', borderRadius: '3px', color: '#007cba' }}>.{modifier.class}</span></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <Button
-                                        variant="secondary"
-                                        size="small"
-                                        onClick={() => editModifier(modifier)}
-                                    >
-                                        {__('Edit', 'block-style-modifiers')}
-                                    </Button>
-                                    <Button
-                                        variant="secondary"
-                                        isDestructive
-                                        size="small"
-                                        onClick={() => deleteModifier(modifier.name)}
-                                    >
-                                        {__('Delete', 'block-style-modifiers')}
-                                    </Button>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                {modifier.description && <p>{modifier.description}</p>}
-                                <p style={{ marginBottom: '0.5rem' }}>
-                                    <strong>{__('Category:', 'block-style-modifiers')}</strong>{' '}
-                                    {modifier.category || __('None', 'block-style-modifiers')}
-                                </p>
-                                <p style={{ marginBottom: 0 }}>
-                                    <strong>{__('Blocks:', 'block-style-modifiers')}</strong>{' '}
-                                    {modifier.blocks.includes('*')
-                                        ? __('All Blocks', 'block-style-modifiers')
-                                        : modifier.blocks.join(', ')}
-                                </p>
-                            </CardBody>
-                        </Card>
-                    ))
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <Button
+                                            variant="secondary"
+                                            size="small"
+                                            onClick={() => editModifier(modifier)}
+                                        >
+                                            {__('Edit', 'block-style-modifiers')}
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            isDestructive
+                                            size="small"
+                                            onClick={() => deleteModifier(modifier.name)}
+                                        >
+                                            {__('Delete', 'block-style-modifiers')}
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardBody style={{ padding: '16px 20px' }}>
+                                    {modifier.description && <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#3c434a' }}>{modifier.description}</p>}
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span style={{ fontSize: '13px', color: '#646970', fontWeight: '500' }}>{__('Category:', 'block-style-modifiers')}</span>
+                                            <span style={{ fontSize: '12px', background: modifier.category ? '#e0f0fa' : '#f0f0f1', color: modifier.category ? '#007cba' : '#646970', padding: '4px 8px', borderRadius: '4px', fontWeight: '500' }}>
+                                                {modifier.category || __('None', 'block-style-modifiers')}
+                                            </span>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span style={{ fontSize: '13px', color: '#646970', fontWeight: '500' }}>{__('Blocks:', 'block-style-modifiers')}</span>
+                                            <span style={{ fontSize: '13px', color: '#3c434a' }}>
+                                                {modifier.blocks.includes('*')
+                                                    ? __('All Blocks', 'block-style-modifiers')
+                                                    : modifier.blocks.join(', ')}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        ))}
+                    </div>
                 )}
             </div>
         </div>

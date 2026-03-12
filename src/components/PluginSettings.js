@@ -74,30 +74,31 @@ const PluginSettings = () => {
 
     if (loading) {
         return (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}>
                 <Spinner />
             </div>
         );
     }
 
     return (
-        <div className="bsm-admin__settings">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             {notice && (
                 <Notice
                     status={notice.status}
                     onRemove={() => setNotice(null)}
                     isDismissible
+                    style={{ marginBottom: '24px' }}
                 >
                     {notice.message}
                 </Notice>
             )}
 
-            <Card>
-                <CardHeader>
-                    <h2>{__('Plugin Settings', 'block-style-modifiers')}</h2>
+            <Card style={{ border: '1px solid #e2e4e7', borderRadius: '4px' }}>
+                <CardHeader style={{ padding: '16px 20px', borderBottom: '1px solid #e2e4e7', background: '#f8f9f9', margin: 0 }}>
+                    <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#1d2327' }}>{__('Plugin Settings', 'block-style-modifiers')}</h2>
                 </CardHeader>
-                <CardBody>
-                    <div className="bsm-admin__form-section">
+                <CardBody style={{ padding: '24px' }}>
+                    <div style={{ marginBottom: '24px' }}>
                         <ToggleControl
                             label={__('Enable Default Modifiers', 'block-style-modifiers')}
                             help={__(
@@ -110,7 +111,7 @@ const PluginSettings = () => {
                         />
                     </div>
 
-                    <div className="bsm-admin__button-group">
+                    <div style={{ display: 'flex', gap: '12px', paddingTop: '16px', borderTop: '1px solid #f0f0f1' }}>
                         <Button
                             variant="primary"
                             onClick={saveSettings}
@@ -125,21 +126,21 @@ const PluginSettings = () => {
                 </CardBody>
             </Card>
 
-            <Card style={{ marginTop: '1.5rem' }}>
-                <CardHeader>
-                    <h3>{__('About Default Modifiers', 'block-style-modifiers')}</h3>
+            <Card style={{ border: '1px solid #e2e4e7', borderRadius: '4px' }}>
+                <CardHeader style={{ padding: '16px 20px', borderBottom: '1px solid #e2e4e7', background: '#f8f9f9', margin: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600', color: '#1d2327' }}>{__('About Default Modifiers', 'block-style-modifiers')}</h3>
                 </CardHeader>
-                <CardBody>
-                    <p>
+                <CardBody style={{ padding: '24px' }}>
+                    <p style={{ fontSize: '15px', color: '#50575e', marginBottom: '20px' }}>
                         {__(
                             'Default modifiers include various animations, hover effects, and text effects that work with common WordPress blocks. They are theme-independent and designed to enhance behavior without conflicting with your theme styles.',
                             'block-style-modifiers'
                         )}
                     </p>
-                    <p>
-                        <strong>{__('Default Categories:', 'block-style-modifiers')}</strong>
+                    <p style={{ marginBottom: '12px' }}>
+                        <strong style={{ color: '#1d2327' }}>{__('Default Categories:', 'block-style-modifiers')}</strong>
                     </p>
-                    <ul>
+                    <ul style={{ paddingLeft: '24px', margin: 0, color: '#50575e', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <li>{__('Animations (fade-in, slide-up, scale-in, etc.)', 'block-style-modifiers')}</li>
                         <li>{__('Animation Delay (timing controls)', 'block-style-modifiers')}</li>
                         <li>{__('Hover Effects (zoom, rotate, brightness, etc.)', 'block-style-modifiers')}</li>

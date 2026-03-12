@@ -36,8 +36,9 @@ const normalizeCategoryObject = (category) => {
     if (typeof category === 'string') {
         const categoryRegistry = window.__BLOCK_STYLE_MODIFIERS_CATEGORIES__ || {};
         if (categoryRegistry[category]) {
-            // Found in registry, return it
-            return categoryRegistry[category];
+            // Found in registry — run through normalization so exclusive is
+            // always a strict boolean regardless of how PHP serialized it.
+            return normalizeCategoryObject(categoryRegistry[category]);
         }
         // If slug not found in registry, create a basic category object
         return {

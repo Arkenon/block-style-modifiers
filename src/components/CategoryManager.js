@@ -167,7 +167,7 @@ const CategoryManager = () => {
 
     if (loading) {
         return (
-            <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '48px' }}>
                 <Spinner />
             </div>
         );
@@ -185,16 +185,16 @@ const CategoryManager = () => {
                 </Notice>
             )}
 
-            <Card style={{ marginBottom: '1.5rem' }}>
-                <CardHeader>
-                    <h3>
+            <Card style={{ marginBottom: '24px', border: '1px solid #e2e4e7', borderRadius: '4px' }}>
+                <CardHeader style={{ padding: '16px 24px', borderBottom: '1px solid #e2e4e7', background: '#f8f9f9', margin: 0 }}>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>
                         {editingCategory
                             ? __('Edit Category', 'block-style-modifiers')
                             : __('Add New Category', 'block-style-modifiers')}
                     </h3>
                 </CardHeader>
-                <CardBody>
-                    <div className="bsm-admin__form-row">
+                <CardBody style={{ padding: '24px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <TextControl
                             label={__('Category Slug', 'block-style-modifiers')}
                             help={__(
@@ -210,9 +210,7 @@ const CategoryManager = () => {
                             __next40pxDefaultSize
                             __nextHasNoMarginBottom
                         />
-                    </div>
 
-                    <div className="bsm-admin__form-row">
                         <TextControl
                             label={__('Category Label', 'block-style-modifiers')}
                             help={__('Display name for the category', 'block-style-modifiers')}
@@ -222,9 +220,7 @@ const CategoryManager = () => {
                             __next40pxDefaultSize
                             __nextHasNoMarginBottom
                         />
-                    </div>
 
-                    <div className="bsm-admin__form-row">
                         <TextareaControl
                             label={__('Description', 'block-style-modifiers')}
                             help={__('Optional description for the category', 'block-style-modifiers')}
@@ -233,9 +229,7 @@ const CategoryManager = () => {
                             rows={3}
                             __nextHasNoMarginBottom
                         />
-                    </div>
 
-                    <div className="bsm-admin__form-row">
                         <ToggleControl
                             label={__('Exclusive Category', 'block-style-modifiers')}
                             help={__(
@@ -246,77 +240,81 @@ const CategoryManager = () => {
                             onChange={(value) => setFormData({ ...formData, exclusive: value })}
                             __nextHasNoMarginBottom
                         />
-                    </div>
 
-                    <div className="bsm-admin__button-group">
-                        <Button
-                            variant="primary"
-                            onClick={saveCategory}
-                            isBusy={saving}
-                            disabled={saving}
-                        >
-                            {saving
-                                ? __('Saving...', 'block-style-modifiers')
-                                : editingCategory
-                                ? __('Update Category', 'block-style-modifiers')
-                                : __('Add Category', 'block-style-modifiers')}
-                        </Button>
-
-                        {editingCategory && (
-                            <Button variant="secondary" onClick={resetForm} disabled={saving}>
-                                {__('Cancel', 'block-style-modifiers')}
+                        <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+                            <Button
+                                variant="primary"
+                                onClick={saveCategory}
+                                isBusy={saving}
+                                disabled={saving}
+                            >
+                                {saving
+                                    ? __('Saving...', 'block-style-modifiers')
+                                    : editingCategory
+                                        ? __('Update Category', 'block-style-modifiers')
+                                        : __('Add Category', 'block-style-modifiers')}
                             </Button>
-                        )}
+
+                            {editingCategory && (
+                                <Button variant="secondary" onClick={resetForm} disabled={saving}>
+                                    {__('Cancel', 'block-style-modifiers')}
+                                </Button>
+                            )}
+                        </div>
                     </div>
                 </CardBody>
             </Card>
 
-            <div className="bsm-admin__item-list">
-                <h3>{__('Existing Categories', 'block-style-modifiers')}</h3>
+            <div style={{ marginTop: '32px' }}>
+                <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#1e1e1e' }}>{__('Existing Categories', 'block-style-modifiers')}</h3>
 
                 {categories.length === 0 ? (
-                    <div className="bsm-admin__empty-state">
-                        <p>{__('No custom categories created yet.', 'block-style-modifiers')}</p>
-                    </div>
+                    <Card style={{ padding: '32px', textAlign: 'center', background: '#f9f9f9' }}>
+                        <p style={{ margin: 0, color: '#646970', fontSize: '15px' }}>{__('No custom categories created yet.', 'block-style-modifiers')}</p>
+                    </Card>
                 ) : (
-                    categories.map((category) => (
-                        <Card key={category.slug} className="bsm-admin__item-card">
-                            <CardHeader>
-                                <div style={{ flex: 1 }}>
-                                    <strong>{category.label}</strong>
-                                    <div style={{ fontSize: '0.85em', color: '#646970' }}>
-                                        {__('Slug:', 'block-style-modifiers')} {category.slug}
+                    <div style={{ display: 'grid', gap: '16px' }}>
+                        {categories.map((category) => (
+                            <Card key={category.slug}>
+                                <CardHeader style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f0f0f0' }}>
+                                    <div>
+                                        <strong style={{ fontSize: '16px' }}>{category.label}</strong>
+                                        <div style={{ fontSize: '13px', color: '#646970', marginTop: '4px' }}>
+                                            <span style={{ fontWeight: '500' }}>{__('Slug:', 'block-style-modifiers')}</span> <span style={{ fontFamily: 'monospace', background: '#f0f0f1', padding: '2px 6px', borderRadius: '3px' }}>{category.slug}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                    <Button
-                                        variant="secondary"
-                                        size="small"
-                                        onClick={() => editCategory(category)}
-                                    >
-                                        {__('Edit', 'block-style-modifiers')}
-                                    </Button>
-                                    <Button
-                                        variant="secondary"
-                                        isDestructive
-                                        size="small"
-                                        onClick={() => deleteCategory(category.slug)}
-                                    >
-                                        {__('Delete', 'block-style-modifiers')}
-                                    </Button>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                {category.description && <p>{category.description}</p>}
-                                <p style={{ marginBottom: 0 }}>
-                                    <strong>{__('Type:', 'block-style-modifiers')}</strong>{' '}
-                                    {category.exclusive
-                                        ? __('Exclusive (Radio)', 'block-style-modifiers')
-                                        : __('Non-Exclusive (Checkbox)', 'block-style-modifiers')}
-                                </p>
-                            </CardBody>
-                        </Card>
-                    ))
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <Button
+                                            variant="secondary"
+                                            size="small"
+                                            onClick={() => editCategory(category)}
+                                        >
+                                            {__('Edit', 'block-style-modifiers')}
+                                        </Button>
+                                        <Button
+                                            variant="secondary"
+                                            isDestructive
+                                            size="small"
+                                            onClick={() => deleteCategory(category.slug)}
+                                        >
+                                            {__('Delete', 'block-style-modifiers')}
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardBody style={{ padding: '16px 20px' }}>
+                                    {category.description && <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#3c434a' }}>{category.description}</p>}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span style={{ fontSize: '13px', color: '#646970', fontWeight: '500' }}>{__('Type:', 'block-style-modifiers')}</span>
+                                        <span style={{ fontSize: '12px', background: category.exclusive ? '#e0f0fa' : '#f0f0f1', color: category.exclusive ? '#007cba' : '#3c434a', padding: '4px 8px', borderRadius: '4px', fontWeight: '500' }}>
+                                            {category.exclusive
+                                                ? __('Exclusive (Radio)', 'block-style-modifiers')
+                                                : __('Non-Exclusive (Checkbox)', 'block-style-modifiers')}
+                                        </span>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        ))}
+                    </div>
                 )}
             </div>
         </div>

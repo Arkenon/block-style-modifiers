@@ -369,6 +369,13 @@ class BSM_REST_Controller extends WP_REST_Controller
     {
         $categories = get_option('bsm_custom_categories', []);
 
+        // Normalize exclusive to strict boolean — WordPress serializes booleans
+        // as 1/"1"/0/"" which causes JS strict comparisons to fail.
+        foreach ($categories as &$category) {
+            $category['exclusive'] = (bool) ($category['exclusive'] ?? false);
+        }
+        unset($category);
+
         return rest_ensure_response($categories);
     }
 
@@ -388,7 +395,7 @@ class BSM_REST_Controller extends WP_REST_Controller
             'slug' => $request->get_param('slug'),
             'label' => $request->get_param('label'),
             'description' => $request->get_param('description') ?? '',
-            'exclusive' => $request->get_param('exclusive') ?? false,
+            'exclusive' => (bool) ($request->get_param('exclusive') ?? false),
         ];
 
         // Check if category already exists
@@ -431,7 +438,7 @@ class BSM_REST_Controller extends WP_REST_Controller
                     'slug' => $slug,
                     'label' => $request->get_param('label'),
                     'description' => $request->get_param('description') ?? '',
-                    'exclusive' => $request->get_param('exclusive') ?? false,
+                    'exclusive' => (bool) ($request->get_param('exclusive') ?? false),
                 ];
                 $found = true;
                 break;

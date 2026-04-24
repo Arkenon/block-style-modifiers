@@ -43,19 +43,31 @@ Style modifiers are organized into categories with two behaviors:
 
 Registering block style modifiers:
 
+Categories are registered separately first, then modifiers reference the category by its slug.
+
 ```php
+// Step 1: Register categories
+block_style_modifiers_register_category( 'hover-effects', [
+    'label'       => __( 'Hover Effects', 'block-style-modifier-pack' ),
+    'description' => __( 'Transform-based hover interactions', 'block-style-modifier-pack' ),
+    'exclusive'   => true,  // Only one hover effect can be selected at a time
+] );
+
+block_style_modifiers_register_category( 'responsive', [
+    'label'       => __( 'Responsive', 'block-style-modifier-pack' ),
+    'description' => __( 'Responsive visibility controls', 'block-style-modifier-pack' ),
+    'exclusive'   => false,  // Multiple modifiers can be selected simultaneously
+] );
+
+// Step 2: Register modifiers — reference the category by slug (string)
+
 // Example 1: Exclusive category (radio behavior)
 block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
     'name'        => 'zoom-on-hover',
     'label'       => __( 'Zoom on Hover', 'block-style-modifier-pack' ),
     'class'       => 'bsm-zoom-on-hover',
     'description' => __( 'Zoom into image on hover', 'block-style-modifier-pack' ),
-    'category'    => [
-        'slug'        => 'hover-effects',
-        'label'       => __( 'Hover Effects', 'block-style-modifier-pack' ),
-        'description' => __( 'Transform-based hover interactions', 'block-style-modifier-pack' ),
-        'exclusive'   => true,  // Only one hover effect can be selected at a time
-    ],
+    'category'    => 'hover-effects',
 ] );
 
 // Example 2: Another modifier in the same exclusive category
@@ -64,11 +76,7 @@ block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
     'label'       => __( 'Grayscale on Hover', 'block-style-modifier-pack' ),
     'class'       => 'bsm-grayscale-hover',
     'description' => __( 'Image appears grayscale and reveals color on hover', 'block-style-modifier-pack' ),
-    'category'    => [
-        'slug'        => 'hover-effects',
-        'label'       => __( 'Hover Effects', 'block-style-modifier-pack' ),
-        'exclusive'   => true,
-    ],
+    'category'    => 'hover-effects',
 ] );
 
 // Example 3: Non-exclusive category (checkbox behavior)
@@ -77,12 +85,7 @@ block_style_modifiers_register_style( '*', [
     'label'        => __( 'Hide on Small Screens', 'block-style-modifier-pack' ),
     'class'        => 'bsm-hide-sm',
     'description'  => __( 'Hide block on small (max-width: 600px) screens', 'block-style-modifier-pack' ),
-    'category'     => [
-        'slug'        => 'responsive',
-        'label'       => __( 'Responsive', 'block-style-modifier-pack' ),
-        'description' => __( 'Responsive visibility controls', 'block-style-modifier-pack' ),
-        'exclusive'   => false,  // Multiple modifiers can be selected
-    ],
+    'category'     => 'responsive',
     'inline_style' => '
         @media (max-width: 600px) {
             .bsm-hide-sm {
@@ -101,24 +104,38 @@ Example result in markup:
 </div>
 ```
 
-**Category Object Structure**
+**Registering Categories**
 
-Categories must be defined as structured objects with the following properties:
+Categories are registered independently using `block_style_modifiers_register_category()` before any modifiers that belong to them.
 
-- **slug** (string, required): Language-independent identifier used for grouping
-- **label** (string, required): Translatable label shown in the UI
-- **description** (string, optional): Descriptive text shown under the category title
-- **exclusive** (boolean, optional): If `true`, only one modifier from this category can be selected at a time (radio behavior). Default: `false` (checkbox behavior)
+```php
+block_style_modifiers_register_category( $slug, $args );
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `$slug` | string, required | Language-independent identifier used for grouping |
+| `label` | string, required | Translatable label shown in the UI |
+| `description` | string, optional | Descriptive text shown under the category title |
+| `exclusive` | boolean, optional | If `true`, only one modifier from this category can be selected at a time (radio behavior). Default: `false` (checkbox behavior) |
 
 Example:
 
 ```php
-'category' => [
-    'slug'        => 'hover-effects',
+block_style_modifiers_register_category( 'hover-effects', [
     'label'       => __( 'Hover Effects', 'my-theme' ),
     'description' => __( 'Transform-based hover interactions', 'my-theme' ),
     'exclusive'   => true,
-]
+] );
+```
+
+Once a category is registered, modifiers reference it by its slug string:
+
+```php
+block_style_modifiers_register_style( $blocks, [
+    ...
+    'category' => 'hover-effects',  // slug string, not an object
+] );
 ```
 
 Modifiers are:

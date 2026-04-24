@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Plugin Name: Block Style Modifiers
  * Description: Adds additive, multi-select style modifiers to Gutenberg blocks.
- * Version: 1.0.7
+ * Version: 1.0.8
  * Author: Kadim Gültekin
  * Author URI: https://github.com/Arkenon
  * License: GPLv2 or later
@@ -66,7 +67,6 @@ if (!function_exists("block_style_modifiers_register_category")) {
 
         // Validate slug
         if (empty($slug) || !is_string($slug)) {
-            error_log('BSM: Invalid category slug provided');
             return;
         }
 
@@ -85,9 +85,6 @@ if (!function_exists("block_style_modifiers_register_category")) {
 
         // Ensure exclusive is always a boolean
         $category_registry[$slug]['exclusive'] = (bool) $category_registry[$slug]['exclusive'];
-
-        // Debug log
-        error_log('BSM: Registered category: ' . $slug . ' | exclusive=' . ($category_registry[$slug]['exclusive'] ? 'true' : 'false') . ' | Total categories: ' . count($category_registry));
     }
 }
 
@@ -239,18 +236,25 @@ if (!function_exists("block_style_modifiers_enqueue_editor_assets")) {
             BSM_PLUGIN_VERSION
         );
 
-        wp_enqueue_style(
-            'block-style-modifier-editor-style-custom',
-            BSM_PLUGIN_URL . '/assets/default-modifiers.css',
-            [],
-            BSM_PLUGIN_VERSION
-        );
+        $enable_defaults = get_option('bsm_enable_default_modifiers', '1');
+
+        // Convert to boolean for comparison
+        $enable_defaults = ($enable_defaults === '1' || $enable_defaults === 1 || $enable_defaults === true);
+
+        if ($enable_defaults) {
+            wp_enqueue_style(
+                'block-style-modifier-editor-style-custom',
+                BSM_PLUGIN_URL . '/assets/default-modifiers.css',
+                [],
+                BSM_PLUGIN_VERSION
+            );
+        }
 
         $inline_css = block_style_modifiers_collect_inline_styles();
         if ($inline_css) {
             wp_add_inline_style(
                 'block-style-modifiers-editor-style',
-                esc_html($inline_css)
+                wp_strip_all_tags($inline_css)
             );
         }
 
@@ -259,21 +263,18 @@ if (!function_exists("block_style_modifiers_enqueue_editor_assets")) {
             'window.__BLOCK_STYLE_MODIFIERS__ = ' . wp_json_encode(
                 block_style_modifiers_get_registry()
             ) . ';' .
-            'window.__BLOCK_STYLE_MODIFIERS_CATEGORIES__ = ' . wp_json_encode(
-                block_style_modifiers_get_category_registry()
-            ) . ';',
+                'window.__BLOCK_STYLE_MODIFIERS_CATEGORIES__ = ' . wp_json_encode(
+                    block_style_modifiers_get_category_registry()
+                ) . ';',
             'before'
         );
-
-        // Debug log
-        $cat_registry = block_style_modifiers_get_category_registry();
-        error_log('BSM: Enqueuing assets. Category registry count: ' . count($cat_registry) . ' | Keys: ' . implode(', ', array_keys($cat_registry)));
     }
 }
 
 if (!function_exists('block_style_modifiers_load_custom_modifiers')) {
     /**
-     * Load custom modifiers from wp_options
+     * Load custom categories and modifiers from wp_options.
+     * Runs after default modifiers (priority 11) so custom entries always win.
      *
      * @return void
      * @since 1.0.8
@@ -297,15 +298,6 @@ if (!function_exists('block_style_modifiers_load_custom_modifiers')) {
                             $exclusive = in_array(strtolower($category['exclusive']), ['true', '1', 'yes', 'on'], true);
                         }
                     }
-
-                    // Debug log - remove after testing
-                    error_log(sprintf(
-                        'BSM: Loading custom category: %s | exclusive input=%s (type=%s) | exclusive output=%s',
-                        $category['slug'],
-                        var_export($category['exclusive'] ?? 'not set', true),
-                        gettype($category['exclusive'] ?? null),
-                        $exclusive ? 'true' : 'false'
-                    ));
 
                     block_style_modifiers_register_category(
                         $category['slug'],
@@ -352,6 +344,9 @@ add_action('plugins_loaded', function () {
 
     // Enqueue assets both for editor and frontend
     add_action('enqueue_block_assets', 'block_style_modifiers_enqueue_editor_assets');
+
+    // Enqueue scroll-triggered animation script on frontend only
+    add_action('wp_enqueue_scripts', 'block_style_modifiers_enqueue_animation_script');
 
     // Register REST API routes
     add_action('rest_api_init', function () {
@@ -462,3 +457,29 @@ if (!function_exists('block_style_modifiers_enqueue_admin_assets')) {
     }
 }
 
+if (!function_exists('block_style_modifiers_enqueue_animation_script')) {
+    /**
+     * Enqueue the Intersection Observer script for scroll-triggered animations.
+     * Runs on wp_enqueue_scripts (frontend only — not in the block editor).
+     *
+     * @return void
+     * @since 1.0.9
+     */
+    function block_style_modifiers_enqueue_animation_script(): void
+    {
+        $enable_defaults = get_option('bsm_enable_default_modifiers', '1');
+
+        // Convert to boolean for comparison
+        $enable_defaults = ($enable_defaults === '1' || $enable_defaults === 1 || $enable_defaults === true);
+
+        if ($enable_defaults) {
+            wp_enqueue_script(
+                'block-style-modifiers-animations',
+                BSM_PLUGIN_URL . 'assets/animations.js',
+                [],
+                BSM_PLUGIN_VERSION,
+                true
+            );
+        }
+    }
+}

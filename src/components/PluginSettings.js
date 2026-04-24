@@ -144,7 +144,6 @@ const PluginSettings = () => {
                         <li>{__('Animations (fade-in, slide-up, scale-in, etc.)', 'block-style-modifiers')}</li>
                         <li>{__('Animation Delay (timing controls)', 'block-style-modifiers')}</li>
                         <li>{__('Hover Effects (zoom, rotate, brightness, etc.)', 'block-style-modifiers')}</li>
-                        <li>{__('Text Effects (underline reveal, fade, etc.)', 'block-style-modifiers')}</li>
                     </ul>
                 </CardBody>
             </Card>

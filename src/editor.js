@@ -7,12 +7,12 @@
  * @author Kadim Gültekin
  */
 
-import {__} from '@wordpress/i18n';
-import {addFilter} from '@wordpress/hooks';
-import {createHigherOrderComponent} from '@wordpress/compose';
-import {InspectorControls} from '@wordpress/block-editor';
-import {PanelBody, RadioControl, CheckboxControl, Button} from '@wordpress/components';
-import {Fragment, useState} from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { addFilter } from '@wordpress/hooks';
+import { createHigherOrderComponent } from '@wordpress/compose';
+import { InspectorControls } from '@wordpress/block-editor';
+import { PanelBody, RadioControl, CheckboxControl, Button } from '@wordpress/components';
+import { Fragment, useState } from '@wordpress/element';
 import '@bsm/editor.scss';
 
 /**
@@ -82,8 +82,8 @@ const getModifiersForBlock = (blockName) => {
     const globalModifiers = registry['*'] || {};
 
     // Check if blockName is an array
-    if(Array.isArray(blockName)) {
-        let combinedModifiers = {...globalModifiers};
+    if (Array.isArray(blockName)) {
+        let combinedModifiers = { ...globalModifiers };
         blockName.forEach(name => {
             const blockMods = registry[name] || {};
             combinedModifiers = {
@@ -168,11 +168,11 @@ addFilter(
  */
 const withStyleModifiers = createHigherOrderComponent(
     (BlockEdit) => (props) => {
-        const {name, attributes, setAttributes} = props;
+        const { name, attributes, setAttributes } = props;
         const allModifiers = getModifiersForBlock(name);
         const groupedModifiers = groupModifiersByCategory(allModifiers);
         const selectedClasses = attributes.styleModifiers || [];
-        
+
 
         const [draggedIndex, setDraggedIndex] = useState(null);
 
@@ -243,11 +243,11 @@ const withStyleModifiers = createHigherOrderComponent(
         const handleDrop = (e, dropIndex) => {
             e.preventDefault();
             if (draggedIndex === null || draggedIndex === dropIndex) return;
-            
+
             const newOrder = [...selectedClasses];
             const [removed] = newOrder.splice(draggedIndex, 1);
             newOrder.splice(dropIndex, 0, removed);
-            
+
             setAttributes({ styleModifiers: newOrder });
             setDraggedIndex(null);
         };
@@ -266,12 +266,17 @@ const withStyleModifiers = createHigherOrderComponent(
             };
         });
 
+        // If no modifiers registered, return BlockEdit directly
+        if (!allModifiers.length) {
+            return <BlockEdit {...props} />;
+        }
+
         return (
             <Fragment>
                 <BlockEdit {...props} />
                 <InspectorControls>
-                    <PanelBody 
-                        title={__('Style Modifiers', 'block-style-modifiers')} 
+                    <PanelBody
+                        title={__('Style Modifiers', 'block-style-modifiers')}
                         initialOpen={true}
                     >
                         {/* Selected modifiers list */}
@@ -444,7 +449,7 @@ addFilter(
  */
 const withStyleModifiersOnEditor = createHigherOrderComponent(
     (BlockListBlock) => (props) => {
-        const {attributes} = props;
+        const { attributes } = props;
 
         if (!attributes?.styleModifiers?.length) {
             return <BlockListBlock {...props} />;

@@ -4,7 +4,7 @@ Tags: block styles, gutenberg, block editor, style variations, custom styles
 Requires at least: 6.1
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,11 +28,13 @@ Style modifiers are organized into categories with two behaviors:
 * **Non-exclusive categories** (checkbox): Multiple modifiers can be selected simultaneously (default: `exclusive: false`)
 * **Exclusive categories** (radio): Only one modifier from the category can be selected at a time (`exclusive: true`)
 
-= Structured Category Object =
+= Registering Categories =
 
-Categories must be defined as objects with:
+Categories are registered independently using `block_style_modifiers_register_category()` before any modifiers that belong to them. Modifiers then reference the category by its slug (string).
 
-* `slug` - Language-independent identifier for grouping (required)
+`block_style_modifiers_register_category( $slug, $args )`
+
+* `$slug` - Language-independent identifier for grouping (required, first argument)
 * `label` - Translatable UI label (required)
 * `description` - Optional category description
 * `exclusive` - Boolean flag for radio behavior (default: false)
@@ -110,6 +112,22 @@ You can easily register your own style modifiers in your theme or custom plugin.
 
 Here are some examples of how to register style modifiers with different category behaviors:
 
+= Step 1: Register Categories =
+
+`block_style_modifiers_register_category( 'hover-effects', [
+    'label'       => __( 'Hover Effects', 'my-theme' ),
+    'description' => __( 'Transform-based hover interactions', 'my-theme' ),
+    'exclusive'   => true,
+] );
+
+block_style_modifiers_register_category( 'responsive', [
+    'label'       => __( 'Responsive', 'my-theme' ),
+    'description' => __( 'Responsive visibility controls', 'my-theme' ),
+    'exclusive'   => false,
+] );`
+
+= Step 2: Register Modifiers (Reference Category by Slug) =
+
 = Exclusive Category (Radio Behavior) =
 
 `block_style_modifiers_register_style( [ 'core/image', 'core/cover' ], [
@@ -117,12 +135,7 @@ Here are some examples of how to register style modifiers with different categor
     'label'       => __( 'Zoom on Hover', 'my-theme' ),
     'class'       => 'bsm-zoom-on-hover',
     'description' => __( 'Zoom into image on hover', 'my-theme' ),
-    'category'    => [
-        'slug'        => 'hover-effects',
-        'label'       => __( 'Hover Effects', 'my-theme' ),
-        'description' => __( 'Transform-based hover interactions', 'my-theme' ),
-        'exclusive'   => true,
-    ],
+    'category'    => 'hover-effects',
 ] );`
 
 = Non-Exclusive Category (Checkbox Behavior) =
@@ -131,12 +144,7 @@ Here are some examples of how to register style modifiers with different categor
     'name'     => 'hide-sm',
     'label'    => __( 'Hide on Small Screens', 'my-theme' ),
     'class'    => 'bsm-hide-sm',
-    'category' => [
-        'slug'        => 'responsive',
-        'label'       => __( 'Responsive', 'my-theme' ),
-        'description' => __( 'Responsive visibility controls', 'my-theme' ),
-        'exclusive'   => false,
-    ],
+    'category' => 'responsive',
 ] );`
 
 That's it! You can now select multiple style modifiers for your blocks in the Block Editor.
@@ -159,6 +167,13 @@ It is available on GitHub:
 3. Add your custom style modifiers using the `register_block_style_modifier` function in your theme's `functions.php` file or a custom plugin.
 
 == Changelog ==
+= 1.0.8 =
+* Added: `block_style_modifiers_register_category()` function for registering categories independently
+* Added: Custom categories and custom modifiers can now be saved and loaded from the database
+* Changed: Category registration is now a two-step process — register the category first, then reference it by slug string in `block_style_modifiers_register_style()`
+* Breaking: Category field in `block_style_modifiers_register_style()` is now a slug string, not an object
+* Updated: Documentation with new two-step registration examples
+
 = 1.0.7 =
 * Added: 5 new animation types (Slide Down, Slide Left, Slide Right, Rotate In, Flip In X)
 * Added: 4 new hover effects (Shake, Brighten, Darken, Blur to Focus)

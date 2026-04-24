@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Default Block Style Modifiers
  * Theme-independent, universal style modifiers that work with any WordPress theme
@@ -41,32 +42,33 @@ function block_style_modifiers_register_defaults()
        ======================================== */
 
     // Animations Category
-    block_style_modifiers_register_category('animations', [
+    block_style_modifiers_register_category('bsm-animations', [
         'label' => __('Animations', 'block-style-modifiers'),
         'description' => __('Entrance animations for blocks', 'block-style-modifiers'),
         'exclusive' => true,
     ]);
 
     // Animation Delay Category
-    block_style_modifiers_register_category('animation-delay', [
+    block_style_modifiers_register_category('bsm-animation-delay', [
         'label' => __('Animation Delay', 'block-style-modifiers'),
         'description' => __('Control animation timing (works with Animations)', 'block-style-modifiers'),
         'exclusive' => true,
     ]);
 
-    // Hover Effects Category
-    block_style_modifiers_register_category('hover-effects', [
+    // Hover Effects Category (transform-based, works on all blocks)
+    block_style_modifiers_register_category('bsm-hover-effects', [
         'label' => __('Hover Effects', 'block-style-modifiers'),
         'description' => __('Transform-based hover interactions', 'block-style-modifiers'),
         'exclusive' => true,
     ]);
 
-    // Text Effects Category
-    block_style_modifiers_register_category('text-effects', [
-        'label' => __('Text Effects', 'block-style-modifiers'),
-        'description' => __('Micro-interactions for text blocks', 'block-style-modifiers'),
+    // Image Hover Effects Category (filter-based, image/cover blocks only)
+    block_style_modifiers_register_category('bsm-image-hover-effects', [
+        'label' => __('Image Hover Effects', 'block-style-modifiers'),
+        'description' => __('Filter-based hover effects for image and cover blocks', 'block-style-modifiers'),
         'exclusive' => true,
     ]);
+
 
     /* ========================================
        DEFINE BLOCK GROUPS
@@ -79,7 +81,8 @@ function block_style_modifiers_register_defaults()
         'core/stack',
         'core/grid',
         'core/column',
-        'core/columns'
+        'core/columns',
+        'core/cover'
     ];
 
     // Hover effect blocks
@@ -87,12 +90,11 @@ function block_style_modifiers_register_defaults()
         'core/image',
         'core/cover',
         'core/media-text',
-    ];
-
-    // Text effect blocks
-    $text_blocks = [
-        'core/paragraph',
-        'core/heading',
+        'core/group',
+        'core/column',
+        'core/columns',
+        'core/section',
+        'core/row'
     ];
 
     // Image-specific blocks for grayscale
@@ -112,7 +114,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Fade In', 'block-style-modifiers'),
         'class' => 'bsm-fade-in',
         'description' => __('Smooth entrance animation with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
+        'category' => 'bsm-animations',
     ]);
 
     // Slide Up
@@ -121,7 +123,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Slide Up', 'block-style-modifiers'),
         'class' => 'bsm-slide-up',
         'description' => __('Slide from bottom with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
+        'category' => 'bsm-animations',
     ]);
 
     // Scale In
@@ -130,7 +132,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Scale In', 'block-style-modifiers'),
         'class' => 'bsm-scale-in',
         'description' => __('Scale up animation with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
+        'category' => 'bsm-animations',
     ]);
 
     // Slide Down
@@ -139,7 +141,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Slide Down', 'block-style-modifiers'),
         'class' => 'bsm-slide-down',
         'description' => __('Slide from top with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
+        'category' => 'bsm-animations',
     ]);
 
     // Slide Left
@@ -148,7 +150,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Slide Left', 'block-style-modifiers'),
         'class' => 'bsm-slide-left',
         'description' => __('Slide from right with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
+        'category' => 'bsm-animations',
     ]);
 
     // Slide Right
@@ -157,26 +159,9 @@ function block_style_modifiers_register_defaults()
         'label' => __('Slide Right', 'block-style-modifiers'),
         'class' => 'bsm-slide-right',
         'description' => __('Slide from left with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
+        'category' => 'bsm-animations',
     ]);
 
-    // Rotate In
-    block_style_modifiers_register_style($animation_blocks, [
-        'name' => 'rotate-in',
-        'label' => __('Rotate In', 'block-style-modifiers'),
-        'class' => 'bsm-rotate-in',
-        'description' => __('Rotate animation with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
-    ]);
-
-    // Flip In X
-    block_style_modifiers_register_style($animation_blocks, [
-        'name' => 'flip-in-x',
-        'label' => __('Flip In X', 'block-style-modifiers'),
-        'class' => 'bsm-flip-in-x',
-        'description' => __('Flip animation along X-axis with fade effect', 'block-style-modifiers'),
-        'category' => 'animations',
-    ]);
 
     /* ========================================
        2️⃣ ANIMATION DELAY
@@ -190,7 +175,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Fast (0.2s)', 'block-style-modifiers'),
         'class' => 'bsm-delay-fast',
         'description' => __('Fast animation delay (0.2 seconds)', 'block-style-modifiers'),
-        'category' => 'animation-delay',
+        'category' => 'bsm-animation-delay',
     ]);
 
     // Normal Delay
@@ -199,7 +184,7 @@ function block_style_modifiers_register_defaults()
         'label' => __('Normal (0.4s)', 'block-style-modifiers'),
         'class' => 'bsm-delay-normal',
         'description' => __('Normal animation delay (0.4 seconds)', 'block-style-modifiers'),
-        'category' => 'animation-delay',
+        'category' => 'bsm-animation-delay',
     ]);
 
     // Slow Delay
@@ -208,176 +193,100 @@ function block_style_modifiers_register_defaults()
         'label' => __('Slow (0.8s)', 'block-style-modifiers'),
         'class' => 'bsm-delay-slow',
         'description' => __('Slow animation delay (0.8 seconds)', 'block-style-modifiers'),
-        'category' => 'animation-delay',
+        'category' => 'bsm-animation-delay',
+    ]);
+
+    // Very Slow Delay
+    block_style_modifiers_register_style($animation_blocks, [
+        'name' => 'delay-very-slow',
+        'label' => __('Very Slow (1.2s)', 'block-style-modifiers'),
+        'class' => 'bsm-delay-very-slow',
+        'description' => __('Very Slow animation delay (1.2 seconds)', 'block-style-modifiers'),
+        'category' => 'bsm-animation-delay',
     ]);
 
     /* ========================================
        3️⃣ HOVER EFFECTS (Transform-based)
        Category: Exclusive (radio behavior)
+       Works on all hover blocks
        ======================================== */
 
     // Zoom In on Hover
-    block_style_modifiers_register_style($hover_blocks, [
+    block_style_modifiers_register_style(array_merge($hover_blocks, $image_blocks), [
         'name' => 'zoom-hover',
         'label' => __('Zoom In on Hover', 'block-style-modifiers'),
         'class' => 'bsm-zoom-hover',
         'description' => __('Zoom into block on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
+        'category' => 'bsm-hover-effects',
     ]);
 
     // Subtle Rotate on Hover
-    block_style_modifiers_register_style($hover_blocks, [
+    block_style_modifiers_register_style(array_merge($hover_blocks, $image_blocks), [
         'name' => 'rotate-hover',
         'label' => __('Subtle Rotate on Hover', 'block-style-modifiers'),
         'class' => 'bsm-rotate-hover',
         'description' => __('Subtle rotation effect on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
+        'category' => 'bsm-hover-effects',
     ]);
 
     // Bounce on Hover
-    block_style_modifiers_register_style($hover_blocks, [
+    block_style_modifiers_register_style(array_merge($hover_blocks, $image_blocks), [
         'name' => 'bounce-hover',
         'label' => __('Bounce on Hover', 'block-style-modifiers'),
         'class' => 'bsm-bounce-hover',
-        'description' => __('Very subtle bounce effect on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
-    ]);
-
-    // Grayscale to Color on Hover (Image/Cover only)
-    block_style_modifiers_register_style($image_blocks, [
-        'name' => 'grayscale-to-color-hover',
-        'label' => __('Grayscale to Color on Hover', 'block-style-modifiers'),
-        'class' => 'bsm-grayscale-to-color-hover',
-        'description' => __('Image starts grayscale and reveals color on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
+        'description' => __('Subtle lift effect on hover', 'block-style-modifiers'),
+        'category' => 'bsm-hover-effects',
     ]);
 
     // Shake on Hover
-    block_style_modifiers_register_style($hover_blocks, [
+    block_style_modifiers_register_style(array_merge($hover_blocks, $image_blocks), [
         'name' => 'shake-hover',
         'label' => __('Shake on Hover', 'block-style-modifiers'),
         'class' => 'bsm-shake-hover',
         'description' => __('Subtle shake/vibrate effect on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
+        'category' => 'bsm-hover-effects',
     ]);
 
+
+    /* ========================================
+       3b️⃣ IMAGE HOVER EFFECTS (Filter-based)
+       Category: Exclusive (radio behavior)
+       Works on Image and Cover blocks only
+       ======================================== */
+
     // Brightness on Hover
-    block_style_modifiers_register_style($hover_blocks, [
+    block_style_modifiers_register_style($image_blocks, [
         'name' => 'brightness-hover',
         'label' => __('Brighten on Hover', 'block-style-modifiers'),
         'class' => 'bsm-brightness-hover',
         'description' => __('Increase brightness on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
+        'category' => 'bsm-image-hover-effects',
     ]);
 
-    // Darken on Hover
-    block_style_modifiers_register_style($hover_blocks, [
-        'name' => 'darken-hover',
-        'label' => __('Darken on Hover', 'block-style-modifiers'),
-        'class' => 'bsm-darken-hover',
-        'description' => __('Decrease brightness on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
-    ]);
-
-    // Blur to Focus on Hover (Image/Cover only)
+    // Blur to Focus on Hover
     block_style_modifiers_register_style($image_blocks, [
         'name' => 'blur-to-focus-hover',
         'label' => __('Blur to Focus on Hover', 'block-style-modifiers'),
         'class' => 'bsm-blur-to-focus-hover',
         'description' => __('Image starts blurred and becomes sharp on hover', 'block-style-modifiers'),
-        'category' => 'hover-effects',
+        'category' => 'bsm-image-hover-effects',
     ]);
 
-
-    /* ========================================
-       4️⃣ TEXT EFFECTS (Micro-interactions)
-       Category: Exclusive (radio behavior)
-       ======================================== */
-
-    // Underline Reveal on Hover
-    block_style_modifiers_register_style($text_blocks, [
-        'name' => 'underline-reveal',
-        'label' => __('Underline Reveal on Hover', 'block-style-modifiers'),
-        'class' => 'bsm-underline-reveal',
-        'description' => __('Animated underline appears on hover', 'block-style-modifiers'),
-        'category' => 'text-effects',
+    // Darken on Hover
+    block_style_modifiers_register_style($image_blocks, [
+        'name' => 'darken-hover',
+        'label' => __('Darken on Hover', 'block-style-modifiers'),
+        'class' => 'bsm-darken-hover',
+        'description' => __('Decrease brightness on hover', 'block-style-modifiers'),
+        'category' => 'bsm-image-hover-effects',
     ]);
 
-    // Soft Text Fade on Hover
-    block_style_modifiers_register_style($text_blocks, [
-        'name' => 'text-fade-hover',
-        'label' => __('Soft Text Fade on Hover', 'block-style-modifiers'),
-        'class' => 'bsm-text-fade-hover',
-        'description' => __('Text softly fades on hover', 'block-style-modifiers'),
-        'category' => 'text-effects',
+    // Grayscale to Color on Hover
+    block_style_modifiers_register_style($image_blocks, [
+        'name' => 'grayscale-to-color-hover',
+        'label' => __('Grayscale to Color on Hover', 'block-style-modifiers'),
+        'class' => 'bsm-grayscale-to-color-hover',
+        'description' => __('Image starts grayscale and reveals color on hover', 'block-style-modifiers'),
+        'category' => 'bsm-image-hover-effects',
     ]);
 }
-
-/**
- * Load custom categories from database
- *
- * @since 1.0.8
- */
-function block_style_modifiers_load_custom_categories()
-{
-    $custom_categories = get_option('bsm_custom_categories', []);
-
-    if (!is_array($custom_categories)) {
-        return;
-    }
-
-    foreach ($custom_categories as $category) {
-        if (!isset($category['slug'])) {
-            continue;
-        }
-
-        block_style_modifiers_register_category(
-            $category['slug'],
-            [
-                'label' => $category['label'] ?? $category['slug'],
-                'description' => $category['description'] ?? '',
-                'exclusive' => $category['exclusive'] ?? false,
-            ]
-        );
-    }
-}
-
-/**
- * Load custom modifiers from database
- *
- * @since 1.0.8
- */
-function block_style_modifiers_load_custom_modifiers()
-{
-    $custom_modifiers = get_option('bsm_custom_modifiers', []);
-
-    if (!is_array($custom_modifiers)) {
-        return;
-    }
-
-    foreach ($custom_modifiers as $modifier) {
-        if (!isset($modifier['name']) || !isset($modifier['blocks'])) {
-            continue;
-        }
-
-        $blocks = $modifier['blocks'];
-
-        // If blocks is '*', register for all blocks
-        if ($blocks === '*' || (is_array($blocks) && in_array('*', $blocks))) {
-            $blocks = '*';
-        }
-
-        block_style_modifiers_register_style(
-            $blocks,
-            [
-                'name' => $modifier['name'],
-                'label' => $modifier['label'] ?? $modifier['name'],
-                'class' => $modifier['class'],
-                'description' => $modifier['description'] ?? '',
-                'category' => $modifier['category'] ?? '',
-                'inline_style' => $modifier['inline_style'] ?? '',
-            ]
-        );
-    }
-}
-

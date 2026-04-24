@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Block Style Modifiers REST API Controller
  * Handles REST API endpoints for plugin settings, categories, and modifiers
@@ -387,7 +388,7 @@ class BSM_REST_Controller extends WP_REST_Controller
      * @return WP_Error | WP_REST_Response
      * @since 1.0.8
      */
-    public function create_category( WP_REST_Request $request)
+    public function create_category(WP_REST_Request $request)
     {
         $categories = get_option('bsm_custom_categories', []);
 
@@ -408,7 +409,6 @@ class BSM_REST_Controller extends WP_REST_Controller
                 );
             }
         }
-
         $categories[] = $new_category;
         update_option('bsm_custom_categories', $categories);
 
@@ -640,4 +640,3 @@ class BSM_REST_Controller extends WP_REST_Controller
         ]);
     }
 }
-
